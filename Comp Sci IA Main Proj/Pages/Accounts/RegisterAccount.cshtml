@@ -1,0 +1,68 @@
+﻿@page
+@model Comp_Sci_IA_Main_Proj_.Pages.Accounts.RegisterAccountModel
+@{
+}
+
+<div class="container border" style="padding:20px">
+    <form method="post">
+        <div class="text-danger" asp-validation-summary="ModelOnly"></div>
+        <label class="text-danger">@ViewData["Error"]</label>
+        <div class="form-group row">
+            <div class="col-2">
+                <label asp-for="Details.Username"></label>
+            </div>
+            <div class="col-5">
+                <input type="text" asp-for="Details.Username" class="form-control" />
+            </div>
+            <span class="text-danger" asp-validation-for="Details.Username"></span>
+        </div>
+
+        <div class="form-group row">
+            <div class="col-2">
+                <label asp-for="Details.Email"></label>
+            </div>
+            <div class="col-5">
+                <input type="email" asp-for="Details.Email" class="form-control" />
+            </div>
+            <span class="text-danger" asp-validation-for="Details.Email"></span>
+        </div>
+
+        <div class="form-group row">
+            <div class="col-2">
+                <label asp-for="Details.PhoneNumber"></label>
+            </div>
+            <div class="col-5">
+                <input type="number" asp-for="Details.PhoneNumber" class="form-control" />
+            </div>
+            <span class="text-danger" asp-validation-for="Details.PhoneNumber"></span>
+        </div>
+
+        <div class="form-group row">
+            <div class="col-2">
+                <label asp-for="Details.Password"></label>
+            </div>
+            <div class="col-5">
+                <input type="password" asp-for="Details.Password" class="form-control" />
+            </div>
+            <span class="text-danger" asp-validation-for="Details.Password"></span>
+        </div>
+
+        <div class="form-group row">
+            <div class="col-2">
+                <label asp-for="Details.ConfirmPassword"></label>
+            </div>
+            <div class="col-5">
+                <input type="password" asp-for="Details.ConfirmPassword" class="form-control" />
+            </div>
+            <span class="text-danger" asp-validation-for="Details.ConfirmPassword"></span>
+        </div>
+
+        <div class="form-group row">
+            <div class="col-2">
+                <input type="submit" class="btn btn-primary" value="Register" />
+            </div>
+            <div class="col-5">
+            </div>
+        </div>
+    </form>
+</div>
