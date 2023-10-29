@@ -1,0 +1,43 @@
+﻿@page
+@model Comp_Sci_IA_Main_Proj_.Pages.Accounts.LoginModel
+@{
+    ViewData["Title"] = "Login";
+}
+
+<div class="container border" style="padding:20px">
+    <form method="post">
+        <legend>Login to your Account</legend>
+        <div class="text-danger" asp-validation-summary="ModelOnly"></div>
+        <label class="text-danger">@ViewData["Error"]</label>
+
+        <div class="form-group">
+            <label asp-for="Details.Username" class="form-label mt-4"></label>
+            <input type="text" asp-for="Details.Username" class="form-control" placeholder="Enter Username" autocomplete="off" />
+            <span class="text-danger" asp-validation-for="Details.Username"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Details.Password" class="form-label mt-4"></label>
+            <input type="password" asp-for="Details.Password" class="form-control" placeholder="Enter Password" />
+            <span class="text-danger" asp-validation-for="Details.Password"></span>
+        </div>
+
+        <div class="row form-check mb-2">
+            <div class="col-2">
+                <input type="checkbox" asp-for="Details.RememberMe" class="btn btn-primary" />
+                <label class="form-check-label" asp-for="Details.RememberMe"></label>
+            </div>
+            <div class="col">
+
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-3">
+                <input type="submit" class="btn btn-warning" value="Login" />
+                <a href="/Accounts/RegisterAccount">
+                    <input type="button" class="btn btn-info" value="Register an Account!">
+                </a>
+            </div>
+        </div>
+    </form>
+</div>

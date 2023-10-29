@@ -1,0 +1,38 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Pages\Trips\Gallery\**" />
+    <Content Remove="Pages\Trips\Gallery\**" />
+    <EmbeddedResource Remove="Pages\Trips\Gallery\**" />
+    <None Remove="Pages\Trips\Gallery\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="Pages\Trips\CreateTrip.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Dapper" Version="2.0.151" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="7.0.9" />
+    <PackageReference Include="System.Data.SQLite.Core" Version="1.0.118" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Pages\Trips\CreateTrip.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="Pages\Trips\CreateTrip.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Pages\Trips\CreateTrip.cshtml" />
+  </ItemGroup>
+
+</Project>

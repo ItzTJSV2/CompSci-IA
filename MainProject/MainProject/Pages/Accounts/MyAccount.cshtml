@@ -1,0 +1,107 @@
+﻿@page
+@model MainProject.Pages.Accounts.MyAccountModel
+@{
+    ViewData["Title"] = "My Account";
+}
+<div class="container border" style="padding:20px">
+    <form method="post">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th scope="col">Account ID</th>
+                    <th scope="col">Username</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Phone Number</th>
+                    <th scope="col">Password</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="default">
+                    <label class="text-danger">@ViewData["Error"]</label>
+                </tr>
+                <tr class="default">
+                    <td style="text-align: center; vertical-align: central">@ViewData["AccountID"]</td>
+                    <td>
+                        <div class="accordion">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="headingOne">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                                        @ViewData["Username"]
+                                    </button>
+                                </h2>
+                                <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample" style="">
+                                    <div class="accordion-body">
+                                        <strong>Change Username</strong>
+                                        <input type="text" asp-for="Account.Username" class="form-control" placeholder="@ViewData["Username"]" autocomplete="off" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                    <td
+                        <div class="accordion">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="headingTwo">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                        @ViewData["Email"]
+                                    </button>
+                                </h2>
+                                <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample" style="">
+                                    <div class="accordion-body">
+                                        <strong>Change Email</strong>
+                                        <input type="email" asp-for="Account.Email" class="form-control" placeholder="@ViewData["Email"]" autocomplete="off" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="accordion">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="headingTwo">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                        @ViewData["Phone"]
+                                    </button>
+                                </h2>
+                                <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample" style="">
+                                    <div class="accordion-body">
+                                        <strong>Change Phone Number</strong>
+                                        <input type="number" asp-for="Account.PhoneNumber" class="form-control" placeholder="@ViewData["Phone"]" autocomplete="off" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <a href="/Accounts/ChangePassword">
+                            <input type="button" class="btn btn-info" value="Change Password" />
+                        </a>
+                        
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <input type="submit" name="Type" value="Change" class="btn btn-warning" value="Confirm Changes" />
+
+
+        <button class="btn btn-danger" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasToggle" aria-controls="offcanvasToggle">
+            Delete My Account
+        </button>
+        <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasToggle" aria-labelledby="offcanvasLabel">
+            <div class="offcanvas-header">
+                <h5 class="offcanvas-title" id="offcanvasLabel">Deletion Confirmation</h5>
+                <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
+            <div class="offcanvas-body">
+                <div>
+                    Are you sure you want to delete your account?  This will not be reversible and will remove you from all trips.
+                </div>
+                <br />
+                <div>
+                    <input type="submit" name="Type" value="Delete" class="btn btn-danger" value="Delete Account" />
+                </div>
+            </div>
+        </div>
+
+    </form>
+</div>

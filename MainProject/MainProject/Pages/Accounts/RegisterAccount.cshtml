@@ -1,0 +1,56 @@
+﻿@page
+@model Comp_Sci_IA_Main_Proj_.Pages.Accounts.RegisterAccountModel
+@{
+    ViewData["Title"] = "Register Account";
+}
+
+<div class="container border" style="padding:20px">
+    <form method="post">
+        <legend>Register an Account</legend>
+        <div class="text-danger" asp-validation-summary="ModelOnly"></div>
+        <label class="text-danger">@ViewData["Error"]</label>
+
+        <div class="form-group">
+            <label asp-for="Details.Username" class="form-label mt-4"></label>
+            <input type="text" asp-for="Details.Username" class="form-control" placeholder="Enter Username" autocomplete="off"/>
+            <span class="text-danger" asp-validation-for="Details.Username"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Details.Email" class="form-label mt-4"></label>
+            <input type="email" asp-for="Details.Email" class="form-control" placeholder="Enter Email" autocomplete="off" />
+            <span class="text-danger" asp-validation-for="Details.Email"></span>
+            <small class="form-text text-muted">We'll never share your email with anyone else.</small>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Details.PhoneNumber" class="form-label mt-4">Phone Number</label>
+            <input type="number" asp-for="Details.PhoneNumber" class="form-control" placeholder="Enter Phone Number" autocomplete="off" />
+            <span class="text-danger" asp-validation-for="Details.PhoneNumber"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Details.Password" class="form-label mt-4"></label>
+            <input type="password" asp-for="Details.Password" class="form-control" placeholder="Enter Password" autocomplete="off" />
+            <span class="text-danger" asp-validation-for="Details.Password"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Details.ConfirmPassword" class="form-label mt-4">Confirm Your Password</label>
+            <input type="password" asp-for="Details.ConfirmPassword" class="form-control" placeholder="Confirm Password" autocomplete="off" />
+            <span class="text-danger" asp-validation-for="Details.ConfirmPassword"></span>
+        </div>
+        <div class="form-group">
+
+        </div>
+        <br />
+        <div class="form-group">
+            <div class="col-3">
+                <input type="submit" class="btn btn-warning" value="Register" />
+                <a href="/Accounts/Login">
+                    <input type="button" class="btn btn-info" value="Login instead!">
+                </a>
+            </div>
+        </div>
+    </form>
+</div>

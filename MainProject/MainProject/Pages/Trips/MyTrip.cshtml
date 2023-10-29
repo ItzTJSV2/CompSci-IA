@@ -1,0 +1,112 @@
+﻿@page
+@model MainProject.Pages.Trips.MyTripModel
+@{
+    var tripID = ViewData["tripID"];
+}
+<style>
+    .TripID {
+        height: 15%;
+        width: 60%;
+        float: left;
+    }
+
+    .Information {
+        height: 15%;
+        width: 40%;
+        float: left;
+    }
+
+    .GMap {
+        height: 70%;
+        width: 80%;
+        float: left;
+    }
+
+    .Settings {
+        height: 70%;
+        width: 20%;
+        float: left;
+    }
+
+    .Stats {
+        height: 15%;
+        width: 100%;
+        float: left;
+    }
+</style>
+
+<div class="container border" style="height:85vh; width: 87vw">
+    <div class="TripID">Trip Id</div>
+    <div class="Information">Information</div>
+    <div class="GMap">Google Map</div>
+    <div class="Settings">Stops</div>
+    <div class="Stats">Statistics</div>
+</div>
+
+<script>
+    //var stops = [
+    //    { lat: , lng: },
+    //    { lat: , lng: }
+    //];
+    //var ITGLatLng = { lat: 10.805131816262907, lng: 106.73868852788668 }; 
+    //var HomeLatLng = { lat: 10.812087, lng: 106.7312055 }; 
+    var map;
+
+    function createMarker(location, name) {
+        var marker = new google.maps.Marker({
+            position: location,
+            map: map,
+            title: name,
+        });
+        var infoWindow = new google.maps.InfoWindow({
+            content: name
+        });
+        marker.addListener("mouseover", () => {
+            infoWindow.open(map, marker);
+        })
+    }
+
+    function DisplayDirection(directionsService, directionsRenderer) {
+        var waypts = [];
+        for (let i = 0; i < stops.length; i++) {
+            waypts.push({
+                location: stops[i],
+                stopover: true,
+            });
+        }
+
+        var request = {
+            origin: HomeLatLng,
+            destination: ITGLatLng,
+            waypoints: waypts,
+            optimizeWaypoints: true,
+            travelMode: 'DRIVING'
+        };
+        directionsService.route(request, function (response, status) {
+            if (status == 'OK') {
+                directionsRenderer.setDirections(response);
+            }
+        });
+    }
+
+    function initMap() {
+        const waypts = [];
+        var direcService = new google.maps.DirectionsService();
+        var direcRenderer = new google.maps.DirectionsRenderer();
+
+
+        map = new google.maps.Map(document.getElementById('map'), {
+            center: HomeLatLng,
+            zoom: 16
+        });
+        direcRenderer.setMap(map);
+        google.maps.event.addListener(map, "click", function (event) {
+            this.setOptions({ scrollwheel: true })
+        });
+
+        DisplayDirection(direcService, direcRenderer);
+
+        //createMarker(HomeLatLng, "Home");
+        //createMarker(ITGLatLng, "ITG");
+    }
+</script>

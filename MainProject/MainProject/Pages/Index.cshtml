@@ -1,0 +1,24 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    @if (User.Identity.IsAuthenticated)
+    {
+        <p>WIP, Trips here.'</p>
+    }
+    else
+    {
+        <p><a href="/Accounts/Register" >Register your Account</a>
+            <br />
+            or <i class="bi bi-trash"></i>
+            <br>
+            <a href="/Accounts/Login">Login!</a>
+        </p>
+    }
+
+
+</div>

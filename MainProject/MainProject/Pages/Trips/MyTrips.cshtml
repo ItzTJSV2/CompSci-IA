@@ -1,0 +1,90 @@
+﻿@page
+@model MainProject.Pages.Trips.MyTripsModel
+@{
+    string Gallery = ViewData["Gallery"].ToString();
+    ViewData["Title"] = "My Trips";
+    TripDBInteract DB = new TripDBInteract();
+    List<int> Trips = new List<int>();
+    if (User.Identity.Name.ToLower() == "admin")
+    {
+        Trips = DB.GetAccessable("admin");
+    } else
+    {
+        Trips = DB.GetAccessable(User.Identity.Name);
+    }
+}
+<style>
+    .card:hover{
+        box-shadow : -1px 9px 40px -12px #808080;
+    }
+</style>
+
+<h1 class="text-center my-5">My Trips</h1>
+<div class="container d-flex flex-wrap" style="text-align: center; justify-content: center">
+    @foreach (var trip in Trips)
+    {
+        List<string> CardTrip = DB.GetTrip(trip);
+        List<string> Members = DB.GetMembersNames(Int16.Parse(CardTrip[0]));
+        int memberValue = Members.Count();
+        int supplementGap = 0;
+        bool indicate = false;
+        if (memberValue < 3)
+        {
+            supplementGap = 3 - memberValue;
+        } else if (memberValue > 3)
+        {
+            indicate = true;
+        }
+        <a href="../Trips/MyTrip/?tripID=@CardTrip[0]" class="card" style="width: 22%; margin-right: 1%; margin-bottom: 1%">
+            <div class="card">
+                <img class="card-img-top" src="" onerror="this.onerror=null; this.src='/Gallery/Default.jpg'" width="100%">
+                <div class="card-body">
+                    <h5 class="card-title">@(CardTrip[1])</h5>
+                    <p class="card-text">Members:</p>
+                    @if (indicate)
+                    {
+                        for (int i = 0; i < 2; i++)
+                        {
+                            <p class="card-title">- @(Members[i])</p>
+                        }
+                        <p class="card-title">...</p>
+                    }
+                    else
+                    {
+                        for (int i = 0; i < Members.Count; i++)
+                        {
+                            <p class="card-title">@(Members[i])</p>
+                        }
+                        for (int j = 0; j < supplementGap; j++)
+                        {
+                            <br />
+                        }
+                    }
+                </div>
+            </div>
+        </a>
+    }
+    <a href="../Trips/CreateTrip" class="card" style="width: 22%; margin-right: 1%; margin-bottom: 1%">
+        <div class="card" height="100%">
+                <h5 class="card-body">Create a New Trip!</h5>
+        </div>
+    </a>
+</div>
+
+<script src="~/lib/jquery/dist/jquery.js"></script>
+<script type="text/javascript">
+    $('.card').hover(
+        function () {
+            $(this).animate({
+                marginTop: "-=1%",
+                marginBottom: "+=1%"
+            }, 200)
+        },
+        function () {
+            $(this).animate({
+                marginTop: "+=1%",
+                marginBottom: "-=1%"
+            })
+        }
+    )
+</script>

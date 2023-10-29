@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.33516.290
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Google Maps API Test", "Google Maps API Test\Google Maps API Test.csproj", "{68690DAA-38A6-4185-AC11-3F18FCAFC1CB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{68690DAA-38A6-4185-AC11-3F18FCAFC1CB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{68690DAA-38A6-4185-AC11-3F18FCAFC1CB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{68690DAA-38A6-4185-AC11-3F18FCAFC1CB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{68690DAA-38A6-4185-AC11-3F18FCAFC1CB}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {970BF270-F497-4429-979C-A4ECF09368AF}
+	EndGlobalSection
+EndGlobal
