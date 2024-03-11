@@ -135,7 +135,7 @@
     </div>
     <div class="Stats" style="border: 3px solid #000000; border-top: none;">
         <h1>Statistics</h1>
-        <i class="bi bi-trash"></i>
+        <div id="DistanceDurationStat">Nothing to display yet, start a route to see more information regarding your trip!</div>
     </div>
 </div>
 
@@ -519,8 +519,10 @@
             return;
         } else {
             var waypts = [];
+            var StopLatLng = [];
             for (let i = 0; i < addressItems.length; i++) {
                 if (addressItems[i] != "") {
+                    StopLatLng.push([stops[i][0], stops[i][1]]);
                     waypts.push({
                         location: new google.maps.LatLng(stops[i][0], stops[i][1]),
                         stopover: true,
@@ -537,6 +539,9 @@
             };
             direcService.route(request, function (response, status) {
                 if (status == 'OK') {
+                    var DistanceDurationString = ("Distance: " + response.routes[0].legs[0].distance.text + "\n" + "Duration: " + response.routes[0].legs[0].duration.text);
+                    document.getElementById("DistanceDurationStat").innerHTML = DistanceDurationString;
+                    console.log(response);
                     direcRenderer.setDirections(response);
                 }
             });

@@ -224,13 +224,5 @@ namespace Comp_Sci_IA_Main_Proj_.Pages.Trips
         {
 
         }
-        public void AddMember()
-        {
-
-        }
-        public void DelMember()
-        {
-
-        }
     }
 }
