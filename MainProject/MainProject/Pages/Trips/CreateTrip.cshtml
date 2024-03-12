@@ -128,19 +128,18 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 </head>
 
-<input type="hidden" name="DestinationSubmit" id="DestinationSubmit">
-<input type="hidden" name="OriginSubmit" id="OriginSubmit">
-<input type="hidden" name="StopLatSubmit" id="StopLatSubmit">
-<input type="hidden" name="StopLongSubmit" id="StopLongSubmit">
-<input type="hidden" name="PeopleIDSubmit" id="PeopleIDSubmit">
-<input type="hidden" name="TripNameSubmit" id="TripNameSubmit">
-
 <div class="container border" style="height:85vh; width: 87vw">
     <div class="TripID" style="border: 3px solid #000000; border-right:none; border-bottom: none; position: relative">
         <div style="width:98%; height:98%; display: flex; margin: 1%; text-align: center; ">
             <div style="height: 100%; width: 24%; float: right; text-align: center;">
                 <form id="Form" method="post">
                     <button type="submit" style="height: 100%; width: 100%; float: right; text-align: center;" class="btn btn-info">Save!</button>
+                    <input type="hidden" name="DestinationSubmit" id="DestinationSubmit" asp-for="DestinationSubmit">
+                    <input type="hidden" name="OriginSubmit" id="OriginSubmit" asp-for="OriginSubmit">
+                    <input type="hidden" name="StopLatSubmit" id="StopLatSubmit" asp-for="StopLatSubmit">
+                    <input type="hidden" name="StopLongSubmit" id="StopLongSubmit" asp-for="StopLongSubmit">
+                    <input type="hidden" name="PeopleIDSubmit" id="PeopleIDSubmit" asp-for="PeopleIDSubmit">
+                    <input type="hidden" name="TripNameSubmit" id="TripNameSubmit" asp-for="TripNameSubmit">
                 </form>
             </div>
             <input type="text" id="TripName" placeholder="Default Trip Name" class="form-control" style="width: 74%; height: 58%;">
@@ -174,7 +173,7 @@
     </div>
     <div class="Stats" style="border: 3px solid #000000; border-top: none; position: relative;">
         <div style="text-align: center;" id="DistanceDurationStat">Nothing to display yet, start a route to see more information regarding your trip!</div>
-        <div style="text-align:center;" id="ErrorDisplay">@ViewData["Error"]</div>
+        <div style="text-align:center;" id="ErrorDisplay">Placeholder Error</div>
     </div>
 </div>
 
@@ -332,6 +331,14 @@
     function SubmitPage(){
         function SubmitPage1() {
 
+            if ((document.getElementById("to").value).trim() == "") {
+                document.getElementById("ErrorDisplay").innerHTML = "Destination not filled."
+                return;
+            }
+            if ((document.getElementById("from").value).trim() == "") {
+                document.getElementById("ErrorDisplay").innerHTML = "Origin not filled."
+                return;
+            }
             document.getElementById("DestinationSubmit").value = document.getElementById("to").value;
             document.getElementById("OriginSubmit").value = document.getElementById("from").value;
             document.getElementById("TripNameSubmit").value = document.getElementById("TripName").value;
@@ -341,6 +348,11 @@
             var TempArray2 = [];
             var TempArray3 = [];
             for (var x = 0; x < stops.length; x++) {
+                if (stops.length == 0) {
+                    TempArray1 = [""];
+                    TempArray2 = [""];
+                    break;
+                }
                 if (stops[x].length != 0) {
                     TempArray1.push(stops[x][0]);
                     TempArray2.push(stops[x][1]);
@@ -348,21 +360,24 @@
             }
 
             for (var y = 0; y < curPeople.length; y++) {
+                if (curPeople.length == 0) {
+                    curPeople = [""];
+                    break;
+                }
                 if (curPeople[y] != "") {
                     TempArray3.push(curPeople[y]);
                 }
             }
-            //document.getElementById("StopLatSubmit").value; = TempArray1.join(', ');
-            //document.getElementById("StopLongSubmit").value; = TempArray2.join(', ');
-            //document.getElementById("PeopleIDSubmit").value; = TempArray3.join(', ')
+            document.getElementById("StopLatSubmit").value = TempArray1.join(', ');
+            document.getElementById("StopLongSubmit").value = TempArray2.join(', ');
+            document.getElementById("PeopleIDSubmit").value = TempArray3.join(', ');
 
-            if (document.getElementById("to").value != "") {
-                return;
-            }
-            // document.getElementById('Form').submit();
+            document.getElementById("ErrorDisplay").innerHTML = document.getElementById("TripNameSubmit").value;
+            document.getElementById('Form').submit();
         }
         SubmitPage1();
     }
+    //////////////////////////////////////////////////////////////////////////////////
     function addStop() {
         const inputWindow = document.getElementById("addStop");
         if (inputWindow.value != "") {
