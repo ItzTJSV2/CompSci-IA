@@ -135,7 +135,45 @@ namespace Comp_Sci_IA_Main_Proj_.Pages.Accounts
 
             return userName;
         }
+        public string getUserTripString(string userName)
+        {
+            string tripString = "";
+            using (var connection = new SQLiteConnection(ConnectionString))
+            {
+                connection.Open();
+                string queryStr = "SELECT * FROM UserTable WHERE Username = @UserName";
+                using (SQLiteCommand command = new SQLiteCommand(queryStr, connection))
+                {
+                    command.Parameters.AddWithValue("@UserName", userName);
+                    using (var reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            tripString = reader.GetString(5);
+                        }
+                    }
+                }
+            }
 
+            return tripString;
+        }
+        public void changeUserTrips(string userName, string newStopString)
+        {
+            using (var connection = new SQLiteConnection(ConnectionString))
+            {
+                connection.Open();
+
+                string query = $"UPDATE UserTable SET Trips = @TripString WHERE Username = @Username";
+                using (var command = new SQLiteCommand(connection))
+                {
+                    command.CommandText = query;
+                    command.Parameters.AddWithValue("@Username", userName);
+                    command.Parameters.AddWithValue("@TripString", newStopString);
+                    command.ExecuteNonQuery();
+                    connection.Close();
+                }
+            }
+        }
         public List<string> getAccount(string Input)
         {
             using (var connection = new SQLiteConnection(ConnectionString))
@@ -195,7 +233,6 @@ namespace Comp_Sci_IA_Main_Proj_.Pages.Accounts
                     return Account;
                 } else
                 {
-                    Console.WriteLine("Something has gone very wrong...");
                     return null;
                 }
             }

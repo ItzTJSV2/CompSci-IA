@@ -104,19 +104,25 @@ namespace Comp_Sci_IA_Main_Proj_.Pages.Trips
 
             } else if (Username.ToLower() == "admin")
             {
-                int Count = -1;
-                string queryStr = "SELECT COUNT(*) FROM TripsTable";
+                string queryStr = "SELECT * FROM TripsTable";
+                List<int> TripList = new List<int>();
                 using (var connection = new SQLiteConnection(ConnectionString))
                 {
                     connection.Open();
                     using (SQLiteCommand command = new SQLiteCommand(queryStr, connection))
                     {
-                        Count = Convert.ToInt32(command.ExecuteScalar());
+                        using (var reader = command.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                TripList.Add(reader.GetInt32(0));
+                            }
+                        }
                     }
                 }
-                for (int i = 1; i < Count; i++)
+                for (int i = 0; i < TripList.Count; i++)
                 {
-                    Trips.Add(i);
+                    Trips.Add(TripList[i]);
                 }
             }
             return Trips;
@@ -167,7 +173,7 @@ namespace Comp_Sci_IA_Main_Proj_.Pages.Trips
             List<string> Temp = (MemberString.Split("-")).ToList();
             for (int i = 0; i < Temp.Count; i++)
             {
-                Members.Add(Int16.Parse(Temp[i]));
+                Members.Add(int.Parse(Temp[i]));
             }
             for (int j = 0; j < Members.Count; j++)
             {
@@ -175,13 +181,13 @@ namespace Comp_Sci_IA_Main_Proj_.Pages.Trips
             }
             return MemberNames;
         }
-        public void CreateTrip(string TName, string TStart, string TStops, string TEnd, string TDate, string Members)
+        public string CreateTrip(string TName, string TStart, string TStops, string TEnd, string TDate, string Members)
         {
             string TripID = "-1";
             using (var connection = new SQLiteConnection(ConnectionString))
             {
                 connection.Open();
-                string queryStr = "INSERT INTO TripsTable (TripName, TripStart, TripStops, TripEnd, TripDate, Members) VALUES (@param1, @param2, @param3, @param4, @param5, @param6)";
+                string queryStr = "INSERT INTO TripsTable (TripName, TripStart, TripStops, TripEnd, TripDate, Members) VALUES (@param1, @param2, @param3, @param4, @param5, @param6); SELECT last_insert_rowid();";
                 using (var command = new SQLiteCommand(connection))
                 {
                     command.CommandText = queryStr;
@@ -191,22 +197,9 @@ namespace Comp_Sci_IA_Main_Proj_.Pages.Trips
                     command.Parameters.AddWithValue("@param4", TEnd);
                     command.Parameters.AddWithValue("@param5", TDate);
                     command.Parameters.AddWithValue("@param6", Members);
-                    command.ExecuteNonQuery();
+                    TripID = command.ExecuteScalar().ToString();
                 }
                 queryStr  = "SELECT TripID FROM TripsTable WHERE TripName = @param1";
-                using (var command = new SQLiteCommand(connection))
-                {
-                    command.CommandText = queryStr;
-                    command.Parameters.AddWithValue("@param1", TName);
-
-                    using (var reader = command.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            TripID = (reader.GetInt32(0).ToString());
-                        }
-                    }
-                }
                 connection.Close();
             }
             string NewPath = Path.Combine(Gallery, TripID);
@@ -215,20 +208,13 @@ namespace Comp_Sci_IA_Main_Proj_.Pages.Trips
                 Directory.CreateDirectory(Path.Combine(NewPath, "Videos"));
                 Directory.CreateDirectory(Path.Combine(NewPath, "Photos"));
             }
+            return TripID;
         }
         public void DeleteTrip()
         {
 
         }
         public void EditTrip()
-        {
-
-        }
-        public void AddMember()
-        {
-
-        }
-        public void DelMember()
         {
 
         }

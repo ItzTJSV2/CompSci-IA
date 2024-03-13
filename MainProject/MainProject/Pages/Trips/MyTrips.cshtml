@@ -24,7 +24,7 @@
     @foreach (var trip in Trips)
     {
         List<string> CardTrip = DB.GetTrip(trip);
-        List<string> Members = DB.GetMembersNames(Int16.Parse(CardTrip[0]));
+        List<string> Members = DB.GetMembersNames(int.Parse(CardTrip[0]));
         int memberValue = Members.Count();
         int supplementGap = 0;
         bool indicate = false;
@@ -66,7 +66,7 @@
     }
     <a href="../Trips/CreateTrip" class="card" style="width: 22%; margin-right: 1%; margin-bottom: 1%">
         <div class="card" height="100%">
-                <h5 class="card-body">Create a New Trip!</h5>
+                <h5 style="text-align: center" class="card-body">Create a New Trip!</h5>
         </div>
     </a>
 </div>

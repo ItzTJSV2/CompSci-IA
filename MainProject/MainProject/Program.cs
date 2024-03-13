@@ -54,9 +54,6 @@ namespace MainProject
             }
             Console.WriteLine("DB check successful.");
 
-            TripDBInteract TripDB = new TripDBInteract();
-            TripDB.CreateTrip("Vung Tau Trip", "100 | 50", "", "50 | 100", "19/2/2023", "1-2");
-
             // BUILDING REST OF WEB APP
             var builder = WebApplication.CreateBuilder(args);
 
