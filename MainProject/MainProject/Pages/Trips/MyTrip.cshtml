@@ -131,6 +131,7 @@
             <div style="height: 100%; width: 24%; float: right; text-align: center;">
                 <form id="Form" method="post">
                     <button type="submit" style="height: 100%; width: 100%; float: right; text-align: center;" class="btn btn-info">Save!</button>
+                    <input type="hidden" name="OldMemberString" id="OldMemberString" asp-for="OldMemberString">
                     <input type="hidden" name="TripIDSubmit" id="TripIDSubmit" asp-for="TripIDSubmit">
                     <input type="hidden" name="DestinationSubmit" id="DestinationSubmit" asp-for="DestinationSubmit">
                     <input type="hidden" name="OriginSubmit" id="OriginSubmit" asp-for="OriginSubmit">
@@ -195,6 +196,9 @@
     var Origin;
     var OriginPlace;
     var autocomplete1;
+
+    var ExistingOriginLatLng;
+    var ExistingDestinationLatLng;
 
     var Destination;
     var DestinationPlace;
@@ -276,9 +280,6 @@
             zoom: 16
         });
 
-        createRequest();
-        PeopleTable();
-
         // Get User's Current Location
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(
@@ -326,56 +327,85 @@
             Destination.value = "";
         });
 
+        var ExistingName = "@Model.TripNameSubmit";
+        document.getElementById("TripName").value = ExistingName;
+
         // ADDING EXISTING PEOPLE
         var PeopleString = "@Model.PeopleIDSubmit";
-        var AmountOfPeople = 0;
-        if (PeopleString != "") {
-            AmountOfPeople++;
-        }
-        for (var i = 0; i < PeopleString.length; i++) {
-            if (PeopleString[i] == "-") {
-                AmountOfPeople++
-            }
-        }        
-        var People = [];
-        if (AmountOfPeople > 0) {
+
+        if (PeopleString.includes("-")) {
+            var People = [];
             People = PeopleString.split("-");
+            console.log("People Array: " + People.join(", "));
+            for (var x = 0; x < People.length; x++) {
+                addPerson(People[x]);
+            }
+        } else if (PeopleString != "") {
+            addPerson(PeopleString);
         } else {
-            People.push(PeopleString);
-        }
-        console.log("People Array: " + People.join(", "));
-        for (var x = 0; x < People.length; x++) {
-            addPerson(People[x]);
+          PeopleTable();  
         }
         // ADDING EXISTING DATE
         var DateAndTimeString = "@Model.DateTimeSubmit";
         var DateAndTimeArray = DateAndTimeString.split("|");
         document.getElementById("DateInput").value = DateAndTimeArray[0];
         document.getElementById("TimeInput").value = DateAndTimeArray[1];
-        // ADDING EXISTING NAME OF TRIP
+        // ADDING EXISTING NAME OF TRIP ORIGIN/DESTINATION
         document.getElementById("TripName").value = "@Model.TripNameSubmit";
-        
-        // FUNCTION TO RETURN ADDRESS FROM LAT AND LNG
-        function AddressFinder(lat, lng) {
-            var latlngString = {
-                lat: parseFloat(lat),
-                lng: parseFloat(lng),
-            };
-            geocoder.geocode({location: (latlngString)}).then((response) => {
-                if (response.results[0]) {
-                    console.log(response);
-                    return response.results[0].formatted_address;
-                }
-            })
-        }
 
         var OriginLatLng = "@Model.OriginSubmit".split("/");
         var DestinationLatLng = "@Model.DestinationSubmit".split("/");
-        var OriginAddress = AddressFinder(OriginLatLng[0], OriginLatLng[1]);
-        var DestinationAddress = AddressFinder(DestinationLatLng[0], DestinationLatLng[1]);
+        var OriginLatLngObject = {
+            lat: parseFloat(OriginLatLng[0]),
+            lng: parseFloat(OriginLatLng[1]),
+        };
+        var DestinationLatLngObject = {
+            lat: parseFloat(DestinationLatLng[0]),
+            lng: parseFloat(DestinationLatLng[1]),
+        };
 
-        console.log("Address (Origin) is: " + OriginAddress);
+        // Find Address and force it to input fields.
+        geocoder.geocode({location: (OriginLatLngObject)}).then((response) => {
+            if (response.results[0]) {
+                document.getElementById("from").value = response.results[0].formatted_address;
+            }
+        });
+        geocoder.geocode({location: (DestinationLatLngObject)}).then((response) => {
+            if (response.results[0]) {
+                document.getElementById("to").value = response.results[0].formatted_address;
+            }
+        });
+        ExistingOriginLatLng = (OriginLatLng[0]+"/"+OriginLatLng[1]);
+        ExistingDestinationLatLng = (DestinationLatLng[0]+"/"+DestinationLatLng[1]);
 
+        // Create Stops (Existing)
+
+
+        var ExistingStopLatString = "@Model.StopLatSubmit";
+        var ExistingStopLngString = "@Model.StopLongSubmit";
+        if (ExistingStopLatString.includes("/")) {
+            // More than one stop
+            var StopLatitudes = ExistingStopLatString.split("/");
+            var StopLongitudes = ExistingStopLngString.split("/");
+
+            console.log("Looping Stops for : " + StopLatitudes.length);
+            for (var x = 0; x < StopLatitudes.length; x++) {
+                var StopLatLngObject = {
+                    lat: parseFloat(StopLatitudes[x]),
+                    lng: parseFloat(StopLongitudes[x]),
+                };
+                stops.push([parseFloat(StopLatitudes[x]), parseFloat(StopLongitudes[x])]);
+            }
+        } else if (ExistingStopLatString != "") {
+            // One stop
+            var StopLatLngObject = {
+                lat: parseFloat(ExistingStopLatString),
+                lng: parseFloat(ExistingStopLngString),
+            };
+            stops.push([parseFloat(ExistingStopLatString), parseFloat(ExistingStopLngString)]);
+        }
+        createRequest();
+        // PeopleTable();
     }
 
     var curPeople = [];
@@ -470,13 +500,18 @@
             }
             document.getElementById("TripNameSubmit").value = document.getElementById("TripName").value;
 
-            var OrigPlace = autocomplete1.getPlace();
-            var DestPlace = autocomplete2.getPlace();
-            var OrigLatLng = OrigPlace.geometry.location.lat() + "/" + OrigPlace.geometry.location.lng();
-            var DestLatLng = DestPlace.geometry.location.lat() + "/" + DestPlace.geometry.location.lng();
+            if (OrigPlace != undefined) {
+                var OrigPlace = autocomplete1.getPlace();
+                var DestPlace = autocomplete2.getPlace();
+                var OrigLatLng = OrigPlace.geometry.location.lat() + "/" + OrigPlace.geometry.location.lng();
+                var DestLatLng = DestPlace.geometry.location.lat() + "/" + DestPlace.geometry.location.lng();
 
-            document.getElementById("OriginSubmit").value = OrigLatLng;
-            document.getElementById("DestinationSubmit").value = DestLatLng;
+                document.getElementById("OriginSubmit").value = OrigLatLng;
+                document.getElementById("DestinationSubmit").value = DestLatLng;
+            } else {
+                document.getElementById("OriginSubmit").value = ExistingOriginLatLng;
+                document.getElementById("DestinationSubmit").ariaValueMax = ExistingDestinationLatLng;
+            }
 
 
             // Need to remove [] and ""

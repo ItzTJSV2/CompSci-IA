@@ -214,9 +214,27 @@ namespace Comp_Sci_IA_Main_Proj_.Pages.Trips
         {
 
         }
-        public void EditTrip()
+        public void EditTrip(string TripID, string TName, string TStart, string TStops, string TEnd, string TDate, string Members)
         {
+            using (var connection = new SQLiteConnection(ConnectionString))
+            {
+                connection.Open();
 
+                string query = $"UPDATE TripsTable SET TripName = @TName, TripStart  = @TStart, TripStops = @TStops, TripEnd = @TEnd, TripDate = @TDate, Members = @Members WHERE TripID = @TripID";
+                using (var command = new SQLiteCommand(connection))
+                {
+                    command.CommandText = query;
+                    command.Parameters.AddWithValue("@TripID", TripID);
+                    command.Parameters.AddWithValue("@TName", TName);
+                    command.Parameters.AddWithValue("@TStart", TStart);
+                    command.Parameters.AddWithValue("@TStops", TStops);
+                    command.Parameters.AddWithValue("@TEnd", TEnd);
+                    command.Parameters.AddWithValue("@TDate", TDate);
+                    command.Parameters.AddWithValue("@Members", Members);
+                    command.ExecuteNonQuery();
+                    connection.Close();
+                }
+            }
         }
     }
 }

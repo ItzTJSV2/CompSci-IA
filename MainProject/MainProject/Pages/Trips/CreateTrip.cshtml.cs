@@ -119,7 +119,13 @@ namespace MainProject.Pages.Trips
                     string[] EachLat = StopLatSubmit.Split(new string[] { ", " }, StringSplitOptions.None);
                     string[] EachLong = StopLongSubmit.Split(new string[] { ", " }, StringSplitOptions.None);
                     StopString = stringCreator.TripStops(EachLat, EachLong);
+                } else
+                {
+                    StopString = $"{StopLatSubmit}/{StopLongSubmit}";
                 }
+            } else
+            {
+                StopString = "";
             }
             string DateString = DateTimeSubmit;
             string newTripID = tripDBInteract.CreateTrip(TripName, Origin, StopString, Destination, DateString, PeopleIDs);
