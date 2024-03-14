@@ -120,7 +120,7 @@ namespace Comp_Sci_IA_Main_Proj_.Pages.Accounts
             using (var connection = new SQLiteConnection(ConnectionString))
             {
                 connection.Open();
-                string queryStr = "INSERT INTO UserTable (Username, Email, PhoneNumber, Password) VALUES (@param1, @param2, @param3, @param4)";
+                string queryStr = "INSERT INTO UserTable (Username, Email, PhoneNumber, Password, Trips) VALUES (@param1, @param2, @param3, @param4, @param5)";
                 using (var command = new SQLiteCommand(connection))
                 {
                     command.CommandText = queryStr;
@@ -128,6 +128,7 @@ namespace Comp_Sci_IA_Main_Proj_.Pages.Accounts
                     command.Parameters.AddWithValue("@param2", Email);
                     command.Parameters.AddWithValue("@param3", PhoneNum);
                     command.Parameters.AddWithValue("@param4", hashPass.ToString());
+                    command.Parameters.AddWithValue("@param5", "");
                     command.ExecuteNonQuery();
                 }
                 connection.Close();

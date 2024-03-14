@@ -6,8 +6,15 @@ namespace MainProject.Pages.Trips
 {
     public class MyTripsModel : PageModel
     {
+        [BindProperty(SupportsGet = true)]
+        public string? TripIDRequested { get; set; }
+        [BindProperty(SupportsGet = true)]
+        public string? ReturnValue { get; set; }
         public IActionResult OnGet()
         {
+            TripIDRequested = "";
+            ReturnValue = "";
+
             TripDBInteract DB = new TripDBInteract();
             List<int> Trips = new List<int>();
             if (User.Identity.Name.ToLower() == "admin")

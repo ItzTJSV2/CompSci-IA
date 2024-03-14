@@ -1,6 +1,7 @@
 ﻿@page
 @model MainProject.Pages.Trips.MyTripsModel
 @{
+    string TripIDSubmitted = "";
     string Gallery = ViewData["Gallery"].ToString();
     ViewData["Title"] = "My Trips";
     TripDBInteract DB = new TripDBInteract();
@@ -11,6 +12,28 @@
     } else
     {
         Trips = DB.GetAccessable(User.Identity.Name);
+    }
+    string output = string.Join(", ", Trips);
+    Console.WriteLine($"Trips: {output}");
+
+    //  [Member][Trip]
+    //  TypeOfData | Member(0)  Member(1)  
+    //  Trip(0)
+    //  Trip(1)
+    //  ...
+
+    List<List<string>> memberIDs = new List<List<string>>();
+    List<List<string>> memberNames = new List<List<string>>();
+    List<List<string>> memberEmails = new List<List<string>>();
+    List<List<string>> memberPhones = new List<List<string>>();
+
+    for (int x = 0; x < Trips.Count(); x++)
+    {
+        string[] TripMemberIDs = (DB.GetTrip(Trips[x])[6]).Split("-");
+        for (int y = 0; y < TripMemberIDs.Length; y++)
+        {
+            // memberIDs.Add();
+        }
     }
 }
 <style>
@@ -25,6 +48,19 @@
     {
         List<string> CardTrip = DB.GetTrip(trip);
         List<string> Members = DB.GetMembersNames(int.Parse(CardTrip[0]));
+        string TripName = CardTrip[1];
+        if (TripName.Length > 25)
+        {
+            List<string> ReconstructString = new List<string>();
+            for (int i = 0; i < 23; i++)
+            {
+                ReconstructString.Add(TripName[i].ToString());
+            }
+            ReconstructString.Add(".");
+            ReconstructString.Add(".");
+            ReconstructString.Add(".");
+            TripName = string.Join("", ReconstructString.ToArray());
+        }
         int memberValue = Members.Count();
         int supplementGap = 0;
         bool indicate = false;
@@ -35,7 +71,7 @@
         {
             indicate = true;
         }
-        <a href="../Trips/MyTrip/?tripID=@CardTrip[0]" class="card" style="width: 22%; margin-right: 1%; margin-bottom: 1%">
+        @* <a href="../Trips/MyTrip/?tripID=@CardTrip[0]" class="card" style="width: 22%; margin-right: 1%; margin-bottom: 1%">
             <div class="card">
                 <img class="card-img-top" src="" onerror="this.onerror=null; this.src='/Gallery/Default.jpg'" width="100%">
                 <div class="card-body">
@@ -62,7 +98,43 @@
                     }
                 </div>
             </div>
-        </a>
+        </a> *@
+        <div class="card" style="width: 22%; margin-right: 1%; margin-bottom: 1%">
+            <div class="card">
+                <a href="../Trips/Gallery/?tripID=@CardTrip[0]">
+                    <img class="card-img-top" src="" onerror="this.onerror=null; this.src='/Gallery/Default.jpg'" width="100%">
+                </a>
+                <div class="card-body">
+                    <a href="../Trips/MyTrip/?tripID=@CardTrip[0]">
+                        <h5 style="font-size: 20px;" class="card-title">@(TripName)</h5>
+                    </a>
+                    <input type="hidden" name="OldMemberString" id="OldMemberString" asp-for="TripIDRequested">
+                    <input type="hidden" name="TripIDSubmit" id="TripIDSubmit" asp-for="ReturnValue">
+                    <div onclick="GetPeopleInformation(@CardTrip[0])">
+                        <h5 style="font-size: 18px; text-decoration: none" class="card-text">Members:</h5>
+                    </div>
+                    @if (indicate)
+                    {
+                        for (int i = 0; i < 2; i++)
+                        {
+                            <p style="font-size: 14px;" class="card-title">@(Members[i])</p>
+                        }
+                        <p style="font-size: 14px;" class="card-title">...</p>
+                    }
+                    else
+                    {
+                        for (int i = 0; i < Members.Count; i++)
+                        {
+                            <p style="font-size: 14px;" class="card-title">@(Members[i])</p>
+                        }
+                        for (int j = 0; j < supplementGap; j++)
+                        {
+                            <br />
+                        }
+                    }
+                </div>
+            </div>
+        </div>
     }
     <a href="../Trips/CreateTrip" class="card" style="width: 22%; margin-right: 1%; margin-bottom: 1%">
         <div class="card" height="100%">
@@ -70,6 +142,12 @@
         </div>
     </a>
 </div>
+
+<script>
+    function GetPeopleInformation() {
+        
+    }
+</script>
 
 <script src="~/lib/jquery/dist/jquery.js"></script>
 <script type="text/javascript">

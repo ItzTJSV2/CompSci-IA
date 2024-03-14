@@ -94,8 +94,6 @@ namespace MainProject.Pages.Trips
                 StopLatSubmit = "";
                 StopLongSubmit = "";
             }
-            Console.WriteLine($"StopLat: {StopLatSubmit}");
-            Console.WriteLine($"StopLng: {StopLongSubmit}");
 
             DestinationSubmit = TripInformation[4];
             DateTimeSubmit = TripInformation[5];
@@ -251,24 +249,40 @@ namespace MainProject.Pages.Trips
                 }
             }
             // Compare the new and old string to find those who need to have the trip removed.
-            Console.WriteLine($"Old Member String: {OldMemberString}");
-            Console.WriteLine($"New Member String: {PeopleIDs}");
-            string[] NewIndividualMembers = PeopleIDs.Split("-");
+            string[] OldIndividualMembers = OldMemberString.Split("-");
             List<string> MembersToRemove = new List<string>();
-            Console.WriteLine($"Looping for {NewIndividualMembers.Length}");
-            for (int NewLoop = 0; NewLoop > NewIndividualMembers.Length; NewLoop++)
+            for (int OldLoop = 0; OldLoop < OldIndividualMembers.Length; OldLoop++)
             {
-                Console.WriteLine($"Loop #{NewLoop}:");
-                if (!OldMemberString.Contains(NewIndividualMembers[NewLoop]))
+                if (!PeopleIDs.Contains(OldIndividualMembers[OldLoop]))
                 {
-                    Console.WriteLine("Didn't Contain");
-                    MembersToRemove.Add(NewIndividualMembers[NewLoop]);
-                } else
-                {
-                    Console.WriteLine("Did Contain");
+                    MembersToRemove.Add(OldIndividualMembers[OldLoop]);
                 }
             }
-            Console.WriteLine($"Ones to Remove: " + String.Join(", ", MembersToRemove));
+            foreach (string Person in MembersToRemove)
+            {
+                string PersonUserName = database.GetName(int.Parse(Person));
+                string CurrentString = database.getUserTripString(PersonUserName);
+                if (CurrentString.Contains("-"))
+                {
+                    List<string> partsList = new List<string>();
+                    string[] parts = CurrentString.Split("-");
+                    for (int i = 0; i < parts.Length; i++)
+                    {
+                        if (parts[i] != TripIDSubmit)
+                        {
+                            partsList.Add(parts[i]);
+                        }
+                    }
+                    string newTripString = string.Join("-", partsList.ToArray());
+
+                    database.changeUserTrips(PersonUserName, (newTripString));
+                }
+                else
+                {
+                    // There's only that trip left in their account
+                    database.changeUserTrips(PersonUserName, (""));
+                }
+            }
 
 
             tripDBInteract.EditTrip(TripIDSubmit, TripName, Origin, StopString, Destination, DateString, PeopleIDs);
