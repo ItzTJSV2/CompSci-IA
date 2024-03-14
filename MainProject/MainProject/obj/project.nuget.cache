@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "ZYSo59qO52zg6H48srfESibfF7eT3qboC//Og6kklAIxbK2XiXv0IaumPL8bT/OyPBpyRWgDCZZWQUyCH0g2dw==",
+  "dgSpecHash": "VqzTZ7X2vjQ0RoX5eaoJswUzDORJy6RN+/IiYXtXrwrtkBypbcukGubqZCYEneFSa4f/K9GAzVJcY2b7TNppPg==",
   "success": true,
-  "projectFilePath": "C:\\Users\\maxtr\\Computer Science HL IA - Max Tran\\MainProject\\MainProject\\MainProject.csproj",
+  "projectFilePath": "C:\\Users\\maxtr\\Computer Science HL IA\\MainProject\\MainProject\\MainProject.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\maxtr\\.nuget\\packages\\dapper\\2.0.151\\dapper.2.0.151.nupkg.sha512",
     "C:\\Users\\maxtr\\.nuget\\packages\\humanizer\\2.14.1\\humanizer.2.14.1.nupkg.sha512",
