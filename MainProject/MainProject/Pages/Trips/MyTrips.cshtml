@@ -1,10 +1,8 @@
 ﻿@page
 @model MainProject.Pages.Trips.MyTripsModel
 @{
-    // FOR CODE IN SCRIPT
-    int RequiredTripID = -1;
-    int RealTripID = -1;
-
+    int FirstIndex = -1;
+    int SecondIndex = -1;
     ////////////////////////
     string TripIDSubmitted = "";
     string Gallery = ViewData["Gallery"].ToString();
@@ -18,61 +16,19 @@
     {
         Trips = DB.GetAccessable(User.Identity.Name);
     }
-    string output = string.Join(", ", Trips);
-    Console.WriteLine($"Trips: {output}");
-
-    //  [Member][Trip]
-    //  TypeOfData | Member(0)  Member(1)  
-    //  Trip(0)
-    //  Trip(1)
-    //  ...
-
-    List<int> TripIDIndexer = new List<int>();
-    List<List<string>> memberIDs = new List<List<string>>();
-    List<List<string>> memberNames = new List<List<string>>();
-    List<List<string>> memberEmails = new List<List<string>>();
-    List<List<string>> memberPhones = new List<List<string>>();
-
-    for (int x = 0; x < Trips.Count(); x++) // For each Trip
-    {
-        TripIDIndexer.Add(Trips[x]);
-        List<string> TripDetails = DB.GetMemberIDString(Trips[x]);
-        List<string> AccountDetails = new List<string>();
-        List<string> TempList1 = new List<string>(); // IDs
-        List<string> TempList2 = new List<string>(); // Names
-        List<string> TempList3 = new List<string>(); // Emails
-        List<string> TempList4 = new List<string>(); // Phone
-        string[] TripMemberIDs = (DB.GetTrip(Trips[x])[6]).Split("-");
-        for (int y = 0; y < TripMemberIDs.Length; y++) // For each Member
-        {
-            AccountDetails = DB.GetUserInformation(int.Parse(TripDetails[y]));
-            TempList1.Add(AccountDetails[0]);
-            TempList2.Add(AccountDetails[1]);
-            TempList3.Add(AccountDetails[2]);
-            TempList4.Add(AccountDetails[3]);
-        }
-        memberIDs.Add(TempList1);
-        memberNames.Add(TempList2);
-        memberEmails.Add(TempList3);
-        memberPhones.Add(TempList4);
-    }
-    Console.WriteLine((string.Join(" - ", TripIDIndexer.ToArray())));
-    // Outputting data FOR TESTING
-    for (int i = 0; i < Trips.Count; i++)
-    {
-        Console.WriteLine($"Trip {i + 1}:");
-        for (int j = 0; j < memberIDs[i].Count; j++)
-        {
-            Console.WriteLine($"ID: {memberIDs[i][j]}, Name: {memberNames[i][j]}, Email: {memberEmails[i][j]}, Phone: {memberPhones[i][j]}");
-        }
-        Console.WriteLine();
-    }
 }
 <style>
     .card:hover{
         box-shadow : -1px 9px 40px -12px #808080;
     }
 </style>
+
+<input type="hidden" name="TripIndexerString" id="TripIndexerString" asp-for="TripIndexerString">
+<input type="hidden" name="AmountOfPeopleString" id="AmountOfPeopleString" asp-for="AmountOfPeopleString">
+<input type="hidden" name="IDListString" id="IDListString" asp-for="IDListString">
+<input type="hidden" name="NameListString" id="NameListString" asp-for="NameListString">
+<input type="hidden" name="EmailListString" id="EmailListString" asp-for="EmailListString">
+<input type="hidden" name="PhoneListString" id="PhoneListString" asp-for="PhoneListString">
 
 <h1 class="text-center my-5">My Trips</h1>
 <div class="container d-flex flex-wrap" style="text-align: center; justify-content: center">
@@ -120,8 +76,6 @@
                         <h5 style="font-size: 20px;" class="card-title">&nbsp;</h5>
                     }
                 </a>
-                <input type="hidden" name="MemberCountPerTrip" id="MemberCountPerTrip" asp-for="MemberCountPerTrip">
-                <input type="hidden" name="TripIndexerString" id="TripIndexerString" asp-for="TripIndexerString">
                 <a class="btn btn-primary" data-bs-toggle="offcanvas" href="#offcanvasExample" role="button" aria-controls="offcanvasExample">
                     <div onclick="GetPeopleInformation(@CardTrip[0])">
                         <h5 style="font-size: 18px; text-decoration: underline; cursor: pointer;" class="card-text">Members:</h5>
@@ -171,7 +125,7 @@
     }
 
     .cell-content {
-        width: 100px; 
+        width: 150px; 
         overflow-x: auto;
         white-space: nowrap;
         -ms-overflow-style: none; /* for Internet Explorer, Edge */
@@ -186,9 +140,10 @@
     }
 </style>
 
-<div style="width: 50%" class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
+<div style="width: 75%" class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
     <div class="offcanvas-header">
         <h5 class="offcanvas-title" id="offcanvasExampleLabel">Member Information</h5>
+        <button type="button" class="btn btn-info" onclick="ResetTable()">Reset Content</button>
         <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
     <div class="offcanvas-body">
@@ -211,36 +166,82 @@
 </div>
 
 <script>
-    function addRow() {
+    function ResetTable() {
+        var tableBody = document.getElementById("tableBody");
+        tableBody.innerHTML = "";
+    }
+    function addRow(ID, Name, Email, Phone) {
         var tableBody = document.getElementById("tableBody");
         var newRow = document.createElement("tr");
-        for (var i = 0; i < 4; i++) {
-            var cell = document.createElement("td");
-            var cellContent = document.createElement("div");
-            cellContent.className = "cell-content";
-            cellContent.textContent = "Data " + (tableBody.rows.length * 4 + i + 1);
-            cell.appendChild(cellContent);
-            newRow.appendChild(cell);
-        }
+
+        var cell = document.createElement("td");
+        var cellContent = document.createElement("div");
+        cellContent.className = "cell-content";
+        cellContent.textContent = ID;
+        cell.appendChild(cellContent);
+        newRow.appendChild(cell);
+
+        var cell = document.createElement("td");
+        var cellContent = document.createElement("div");
+        cellContent.className = "cell-content";
+        cellContent.textContent = Name;
+        cell.appendChild(cellContent);
+        newRow.appendChild(cell);
+
+        var cell = document.createElement("td");
+        var cellContent = document.createElement("div");
+        cellContent.className = "cell-content";
+        cellContent.textContent = Email;
+        cell.appendChild(cellContent);
+        newRow.appendChild(cell);
+
+        var cell = document.createElement("td");
+        var cellContent = document.createElement("div");
+        cellContent.className = "cell-content";
+        cellContent.textContent = Phone;
+        cell.appendChild(cellContent);
+        newRow.appendChild(cell);
+
         tableBody.appendChild(newRow);
     }
 
     function GetPeopleInformation(tripID) {
-        //Console.WriteLine($"Trip {i + 1}:");
-        //for (int j = 0; j < memberIDs[i].Count; j++)
-        //{
-        //    Console.WriteLine($"ID: {memberIDs[i][j]}, Name: {memberNames[i][j]}, Email: {memberEmails[i][j]}, Phone: {memberPhones[i][j]}");
-        //}
-        document.getElementById("TripIndexerString").value = ("@string.Join("-", TripIDIndexer.ToArray())");
-        var TripOrder = (document.getElementById("TripIndexerString").value).split("-");
+        ResetTable();
         console.log(document.getElementById("TripIndexerString").value);
+        console.log(document.getElementById("AmountOfPeopleString").value);
+        console.log(document.getElementById("IDListString").value);
+        console.log(document.getElementById("NameListString").value);
+        console.log(document.getElementById("EmailListString").value);
+        console.log(document.getElementById("PhoneListString").value);
+
+        var TripOrder = (document.getElementById("TripIndexerString").value).split("-");
+        console.log(TripOrder);
         var FoundIndex = -1;
         for (var x = 0; x < TripOrder.length; x++) {
-            if (tripID = TripOrder[x]) {
+            if (tripID == TripOrder[x]) {
                 FoundIndex = x;
+                break;
             }
         }
+
+        var IdsInTrip = (document.getElementById("IDListString").value).split("|");
+        var NamesInTrip = (document.getElementById("NameListString").value).split("|");
+        var EmailsInTrip = (document.getElementById("EmailListString").value).split("|");
+        var PhonesInTrip = (document.getElementById("PhoneListString").value).split("|");
+
+        var AmountOfFields = ((document.getElementById("AmountOfPeopleString").value).split("-"))[FoundIndex];
+
         console.log("Found at Index: " + FoundIndex);
+        console.log("Amount of Fields Known: " + AmountOfFields);
+        console.log(NamesInTrip);
+
+        var ThisTripsIDs = IdsInTrip[FoundIndex].split("/");
+        var ThisTripsNames = NamesInTrip[FoundIndex].split("/");
+        var ThisTripsEmails = EmailsInTrip[FoundIndex].split("/");
+        var ThisTripsPhones = PhonesInTrip[FoundIndex].split("/");
+        for (var i = 0; i < AmountOfFields; i++) {
+            addRow(ThisTripsIDs[i], ThisTripsNames[i], ThisTripsEmails[i], ThisTripsPhones[i]);
+        }
     }
 </script>
 
