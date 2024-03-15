@@ -225,9 +225,21 @@ namespace Comp_Sci_IA_Main_Proj_.Pages.Trips
             }
             return TripID;
         }
-        public void DeleteTrip()
+        public void DeleteTrip(int TripID)
         {
+            using (var connection = new SQLiteConnection(ConnectionString))
+            {
+                connection.Open();
 
+                string query = $"DELETE FROM TripsTable WHERE TripID = @Id";
+                using (var command = new SQLiteCommand(connection))
+                {
+                    command.CommandText = query;
+                    command.Parameters.AddWithValue("@Id", TripID);
+                    command.ExecuteNonQuery();
+                    connection.Close();
+                }
+            }
         }
         public void EditTrip(string TripID, string TName, string TStart, string TStops, string TEnd, string TDate, string Members)
         {

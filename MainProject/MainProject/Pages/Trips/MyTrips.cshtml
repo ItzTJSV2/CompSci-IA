@@ -73,7 +73,7 @@
                     <h5 style="font-size: 20px;" class="card-title">@(TripName)</h5>
                     @if (AddTitleGap)
                     {
-                        <h5 style="font-size: 20px;" class="card-title">&nbsp;</h5>
+                        <br style="font-size:20px;"/>
                     }
                 </a>
                 <a class="btn btn-primary" data-bs-toggle="offcanvas" href="#offcanvasExample" role="button" aria-controls="offcanvasExample">
@@ -100,6 +100,12 @@
                         <br />
                     }
                 }
+            </div>
+            <div class="card-footer text-muted">
+                <form id="form" method="post">
+                    <input type="hidden" name="TripID" value="@CardTrip[0]"/>
+                    <button class="btn btn-danger" type="submit">Delete This Trip</button>
+                </form>
             </div>
         </div>
     }

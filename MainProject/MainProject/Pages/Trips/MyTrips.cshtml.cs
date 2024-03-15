@@ -1,3 +1,4 @@
+using Comp_Sci_IA_Main_Proj_.Pages.Accounts;
 using Comp_Sci_IA_Main_Proj_.Pages.Trips;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -100,9 +101,37 @@ namespace MainProject.Pages.Trips
 
             return Page();
         }
-        public IActionResult OnPost(int Trip)
-        {
-            return null;
+        public IActionResult OnPost(string TripID) {
+            TripDBInteract tripDBInteract = new TripDBInteract();
+            CheckDB checkDB = new CheckDB();
+            List<string> MemberString = tripDBInteract.GetMemberIDString(int.Parse(TripID));
+            foreach (string PersonID in MemberString)
+            {
+                string PersonUserName = checkDB.GetName(int.Parse(PersonID));
+                string CurrentString = checkDB.getUserTripString(PersonUserName);
+                if (CurrentString.Contains("-"))
+                {
+                    List<string> partsList = new List<string>();
+                    string[] parts = CurrentString.Split("-");
+                    for (int i = 0; i < parts.Length; i++)
+                    {
+                        if (parts[i] != TripID)
+                        {
+                            partsList.Add(parts[i]);
+                        }
+                    }
+                    string newTripString = string.Join("-", partsList.ToArray());
+
+                    checkDB.changeUserTrips(PersonUserName, (newTripString));
+                }
+                else
+                {
+                    // There's only that trip left in their account
+                    checkDB.changeUserTrips(PersonUserName, (""));
+                }
+            }
+            tripDBInteract.DeleteTrip(int.Parse(TripID));
+            return RedirectToPage("/Index");
         }
     }
 }

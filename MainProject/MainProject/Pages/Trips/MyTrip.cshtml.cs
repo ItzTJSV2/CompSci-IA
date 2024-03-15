@@ -258,6 +258,7 @@ namespace MainProject.Pages.Trips
                     MembersToRemove.Add(OldIndividualMembers[OldLoop]);
                 }
             }
+            // Remove the tripID from the string of each member
             foreach (string Person in MembersToRemove)
             {
                 string PersonUserName = database.GetName(int.Parse(Person));
