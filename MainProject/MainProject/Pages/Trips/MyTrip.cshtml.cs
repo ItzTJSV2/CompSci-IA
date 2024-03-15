@@ -288,5 +288,6 @@ namespace MainProject.Pages.Trips
             tripDBInteract.EditTrip(TripIDSubmit, TripName, Origin, StopString, Destination, DateString, PeopleIDs);
             return RedirectToPage("MyTrips");
         }
+
     }
 }

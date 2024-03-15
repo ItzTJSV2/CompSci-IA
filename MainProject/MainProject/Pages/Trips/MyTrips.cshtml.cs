@@ -7,13 +7,13 @@ namespace MainProject.Pages.Trips
     public class MyTripsModel : PageModel
     {
         [BindProperty(SupportsGet = true)]
-        public string? TripIDRequested { get; set; }
+        public string? MemberCountPerTrip { get; set; }
         [BindProperty(SupportsGet = true)]
-        public string? ReturnValue { get; set; }
+        public string? TripIndexerString { get; set; }
         public IActionResult OnGet()
         {
-            TripIDRequested = "";
-            ReturnValue = "";
+            MemberCountPerTrip = "";
+            TripIndexerString = "";
 
             TripDBInteract DB = new TripDBInteract();
             List<int> Trips = new List<int>();

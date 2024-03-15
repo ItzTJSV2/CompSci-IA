@@ -1,6 +1,11 @@
 ﻿@page
 @model MainProject.Pages.Trips.MyTripsModel
 @{
+    // FOR CODE IN SCRIPT
+    int RequiredTripID = -1;
+    int RealTripID = -1;
+
+    ////////////////////////
     string TripIDSubmitted = "";
     string Gallery = ViewData["Gallery"].ToString();
     ViewData["Title"] = "My Trips";
@@ -22,18 +27,45 @@
     //  Trip(1)
     //  ...
 
+    List<int> TripIDIndexer = new List<int>();
     List<List<string>> memberIDs = new List<List<string>>();
     List<List<string>> memberNames = new List<List<string>>();
     List<List<string>> memberEmails = new List<List<string>>();
     List<List<string>> memberPhones = new List<List<string>>();
 
-    for (int x = 0; x < Trips.Count(); x++)
+    for (int x = 0; x < Trips.Count(); x++) // For each Trip
     {
+        TripIDIndexer.Add(Trips[x]);
+        List<string> TripDetails = DB.GetMemberIDString(Trips[x]);
+        List<string> AccountDetails = new List<string>();
+        List<string> TempList1 = new List<string>(); // IDs
+        List<string> TempList2 = new List<string>(); // Names
+        List<string> TempList3 = new List<string>(); // Emails
+        List<string> TempList4 = new List<string>(); // Phone
         string[] TripMemberIDs = (DB.GetTrip(Trips[x])[6]).Split("-");
-        for (int y = 0; y < TripMemberIDs.Length; y++)
+        for (int y = 0; y < TripMemberIDs.Length; y++) // For each Member
         {
-            // memberIDs.Add();
+            AccountDetails = DB.GetUserInformation(int.Parse(TripDetails[y]));
+            TempList1.Add(AccountDetails[0]);
+            TempList2.Add(AccountDetails[1]);
+            TempList3.Add(AccountDetails[2]);
+            TempList4.Add(AccountDetails[3]);
         }
+        memberIDs.Add(TempList1);
+        memberNames.Add(TempList2);
+        memberEmails.Add(TempList3);
+        memberPhones.Add(TempList4);
+    }
+    Console.WriteLine((string.Join(" - ", TripIDIndexer.ToArray())));
+    // Outputting data FOR TESTING
+    for (int i = 0; i < Trips.Count; i++)
+    {
+        Console.WriteLine($"Trip {i + 1}:");
+        for (int j = 0; j < memberIDs[i].Count; j++)
+        {
+            Console.WriteLine($"ID: {memberIDs[i][j]}, Name: {memberNames[i][j]}, Email: {memberEmails[i][j]}, Phone: {memberPhones[i][j]}");
+        }
+        Console.WriteLine();
     }
 }
 <style>
@@ -49,10 +81,15 @@
         List<string> CardTrip = DB.GetTrip(trip);
         List<string> Members = DB.GetMembersNames(int.Parse(CardTrip[0]));
         string TripName = CardTrip[1];
-        if (TripName.Length > 25)
+        bool AddTitleGap = false;
+        if (TripName.Length < 15) // Only one line.
+        {
+            AddTitleGap = true;
+        }
+        if (TripName.Length > 28)
         {
             List<string> ReconstructString = new List<string>();
-            for (int i = 0; i < 23; i++)
+            for (int i = 0; i < 26; i++)
             {
                 ReconstructString.Add(TripName[i].ToString());
             }
@@ -71,81 +108,139 @@
         {
             indicate = true;
         }
-        @* <a href="../Trips/MyTrip/?tripID=@CardTrip[0]" class="card" style="width: 22%; margin-right: 1%; margin-bottom: 1%">
-            <div class="card">
-                <img class="card-img-top" src="" onerror="this.onerror=null; this.src='/Gallery/Default.jpg'" width="100%">
-                <div class="card-body">
-                    <h5 class="card-title">@(CardTrip[1])</h5>
-                    <p class="card-text">Members:</p>
-                    @if (indicate)
-                    {
-                        for (int i = 0; i < 2; i++)
-                        {
-                            <p class="card-title">- @(Members[i])</p>
-                        }
-                        <p class="card-title">...</p>
-                    }
-                    else
-                    {
-                        for (int i = 0; i < Members.Count; i++)
-                        {
-                            <p class="card-title">@(Members[i])</p>
-                        }
-                        for (int j = 0; j < supplementGap; j++)
-                        {
-                            <br />
-                        }
-                    }
-                </div>
-            </div>
-        </a> *@
         <div class="card" style="width: 22%; margin-right: 1%; margin-bottom: 1%">
-            <div class="card">
-                <a href="../Trips/Gallery/?tripID=@CardTrip[0]">
-                    <img class="card-img-top" src="" onerror="this.onerror=null; this.src='/Gallery/Default.jpg'" width="100%">
+            <a href="../Trips/Gallery/?tripID=@CardTrip[0]">
+                <img class="card-img-top" src="" onerror="this.onerror=null; this.src='/Gallery/Default.jpg'">
+            </a>
+            <div class="card-body">
+                <a href="../Trips/MyTrip/?tripID=@CardTrip[0]">
+                    <h5 style="font-size: 20px;" class="card-title">@(TripName)</h5>
+                    @if (AddTitleGap)
+                    {
+                        <h5 style="font-size: 20px;" class="card-title">&nbsp;</h5>
+                    }
                 </a>
-                <div class="card-body">
-                    <a href="../Trips/MyTrip/?tripID=@CardTrip[0]">
-                        <h5 style="font-size: 20px;" class="card-title">@(TripName)</h5>
-                    </a>
-                    <input type="hidden" name="OldMemberString" id="OldMemberString" asp-for="TripIDRequested">
-                    <input type="hidden" name="TripIDSubmit" id="TripIDSubmit" asp-for="ReturnValue">
+                <input type="hidden" name="MemberCountPerTrip" id="MemberCountPerTrip" asp-for="MemberCountPerTrip">
+                <input type="hidden" name="TripIndexerString" id="TripIndexerString" asp-for="TripIndexerString">
+                <a class="btn btn-primary" data-bs-toggle="offcanvas" href="#offcanvasExample" role="button" aria-controls="offcanvasExample">
                     <div onclick="GetPeopleInformation(@CardTrip[0])">
-                        <h5 style="font-size: 18px; text-decoration: none" class="card-text">Members:</h5>
+                        <h5 style="font-size: 18px; text-decoration: underline; cursor: pointer;" class="card-text">Members:</h5>
                     </div>
-                    @if (indicate)
+                </a>
+                @if (indicate)
+                {
+                    for (int i = 0; i < 2; i++)
                     {
-                        for (int i = 0; i < 2; i++)
-                        {
-                            <p style="font-size: 14px;" class="card-title">@(Members[i])</p>
-                        }
-                        <p style="font-size: 14px;" class="card-title">...</p>
+                        <p style="font-size: 14px;" class="card-title">@(Members[i])</p>
                     }
-                    else
+                    <p style="font-size: 14px;" class="card-title">...</p>
+                }
+                else
+                {
+                    for (int i = 0; i < Members.Count; i++)
                     {
-                        for (int i = 0; i < Members.Count; i++)
-                        {
-                            <p style="font-size: 14px;" class="card-title">@(Members[i])</p>
-                        }
-                        for (int j = 0; j < supplementGap; j++)
-                        {
-                            <br />
-                        }
+                        <p style="font-size: 14px;" class="card-title">@(Members[i])</p>
                     }
-                </div>
+                    for (int j = 0; j < supplementGap; j++)
+                    {
+                        <br />
+                    }
+                }
             </div>
         </div>
     }
     <a href="../Trips/CreateTrip" class="card" style="width: 22%; margin-right: 1%; margin-bottom: 1%">
-        <div class="card" height="100%">
-                <h5 style="text-align: center" class="card-body">Create a New Trip!</h5>
+        <img class="card-img-top" src="/Gallery/AddTrip.jpg" onerror="this.onerror=null;">
+        <div class="card-body">
+            <h5 style="font-size: 20px;" class="card-title">Create a new Trip!</h5>
         </div>
     </a>
 </div>
 
+<style>
+    /* Shaded borders between cells */
+    table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    th, td {
+        border: 1px solid #dddddd;
+        padding: 0;
+        text-align: center;
+    }
+
+    .cell-content {
+        width: 100px; 
+        overflow-x: auto;
+        white-space: nowrap;
+        -ms-overflow-style: none; /* for Internet Explorer, Edge */
+        scrollbar-width: none; /* for Firefox */
+    }
+
+    /* Horizontal scrolling */
+    .table-container {
+        overflow-y: auto;
+        -ms-overflow-style: none; /* for Internet Explorer, Edge */
+        scrollbar-width: none; /* for Firefox */
+    }
+</style>
+
+<div style="width: 50%" class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="offcanvasExampleLabel">Member Information</h5>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+        <div class="table-container">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Account ID</th>
+                        <th>Username</th>
+                        <th>Email Address</th>
+                        <th>Phone Number</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
 <script>
-    function GetPeopleInformation() {
-        
+    function addRow() {
+        var tableBody = document.getElementById("tableBody");
+        var newRow = document.createElement("tr");
+        for (var i = 0; i < 4; i++) {
+            var cell = document.createElement("td");
+            var cellContent = document.createElement("div");
+            cellContent.className = "cell-content";
+            cellContent.textContent = "Data " + (tableBody.rows.length * 4 + i + 1);
+            cell.appendChild(cellContent);
+            newRow.appendChild(cell);
+        }
+        tableBody.appendChild(newRow);
+    }
+
+    function GetPeopleInformation(tripID) {
+        //Console.WriteLine($"Trip {i + 1}:");
+        //for (int j = 0; j < memberIDs[i].Count; j++)
+        //{
+        //    Console.WriteLine($"ID: {memberIDs[i][j]}, Name: {memberNames[i][j]}, Email: {memberEmails[i][j]}, Phone: {memberPhones[i][j]}");
+        //}
+        document.getElementById("TripIndexerString").value = ("@string.Join("-", TripIDIndexer.ToArray())");
+        var TripOrder = (document.getElementById("TripIndexerString").value).split("-");
+        console.log(document.getElementById("TripIndexerString").value);
+        var FoundIndex = -1;
+        for (var x = 0; x < TripOrder.length; x++) {
+            if (tripID = TripOrder[x]) {
+                FoundIndex = x;
+            }
+        }
+        console.log("Found at Index: " + FoundIndex);
     }
 </script>
 

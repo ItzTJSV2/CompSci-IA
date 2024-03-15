@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Principal;
+using NuGet.Protocol.Plugins;
 
 namespace Comp_Sci_IA_Main_Proj_.Pages.Trips
 {
@@ -162,6 +163,20 @@ namespace Comp_Sci_IA_Main_Proj_.Pages.Trips
                 return Trip;
             }
         }
+        public List<string> GetMemberIDString(int tripID)
+        {
+            List<string> Members = new List<string>();
+            TripDBInteract DB = new TripDBInteract();
+            CheckDB UserDB = new CheckDB();
+
+            string MemberString = DB.GetTrip(tripID)[6];
+            List<string> Temp = (MemberString.Split("-")).ToList();
+            for (int i = 0; i < Temp.Count; i++)
+            {
+                Members.Add(Temp[i]);
+            }
+            return Members;
+        }
         public List<string> GetMembersNames(int tripID)
         {
             List<string> MemberNames = new List<string>();
@@ -236,5 +251,43 @@ namespace Comp_Sci_IA_Main_Proj_.Pages.Trips
                 }
             }
         }
+
+        public List<string> GetUserInformation(int AccountID)
+        {
+            using (var connection = new SQLiteConnection(ConnectionString))
+            {
+                List<string> Account = new List<string>();
+                string queryStr1 = "SELECT * FROM UserTable WHERE AccountID = @Id";
+                using (SQLiteCommand command = new SQLiteCommand(queryStr1, connection))
+                {
+                    command.Parameters.AddWithValue("@Id", AccountID);
+
+                    connection.Open();
+
+                    using (var reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            Account.Add(reader.GetInt32(0).ToString());
+                            Account.Add(reader.GetString(1));
+                            Account.Add(reader.GetString(2));
+                            Account.Add(reader.GetString(3));
+                            Account.Add(reader.GetString(4));
+                            if (!reader.IsDBNull(5))
+                            {
+                                Account.Add(reader.GetString(5));
+                            }
+                            else
+                            {
+                                Account.Add("");
+                            }
+                        }
+                    }
+                }
+                return Account;
+            }
+            return null;
+        }
+
     }
 }
