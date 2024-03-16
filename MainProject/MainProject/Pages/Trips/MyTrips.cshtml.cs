@@ -131,7 +131,7 @@ namespace MainProject.Pages.Trips
                 }
             }
             tripDBInteract.DeleteTrip(int.Parse(TripID));
-            return RedirectToPage("/Index");
+            return Page(); ;
         }
     }
 }

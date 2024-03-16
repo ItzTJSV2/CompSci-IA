@@ -240,6 +240,11 @@ namespace Comp_Sci_IA_Main_Proj_.Pages.Trips
                     connection.Close();
                 }
             }
+            string NewPath = Path.Combine(Gallery, TripID.ToString());
+            if (File.Exists(NewPath))
+            {
+                Directory.Delete(NewPath, true);
+            }
         }
         public void EditTrip(string TripID, string TName, string TStart, string TStops, string TEnd, string TDate, string Members)
         {

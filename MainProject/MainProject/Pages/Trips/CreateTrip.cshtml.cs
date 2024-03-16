@@ -77,6 +77,10 @@ namespace MainProject.Pages.Trips
                             TempList.Add(ID);
                         }
                     }
+                    if (UserID != "null")
+                    {
+                        PeopleNeedToBeAmmended.Add(User.Identity.Name);
+                    }
                     if (TempList.Count > 0)
                     {
                         if (UserID == "null")

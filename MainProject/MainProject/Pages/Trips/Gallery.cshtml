@@ -1,4 +1,104 @@
 ﻿@page
 @model MainProject.Pages.Trips.GalleryModel
 @{
+    ViewData["Title"] = "Gallery";
 }
+<style>
+    .PhotoContainer .VideoContainer {
+        margin-top: 20px;
+    }
+
+    .card {
+        margin-bottom: 10px;
+        margin-right: 10px;
+    }
+
+    .card:hover .btn-group {
+        display: block;
+    }
+
+    .btn-group {
+        display: none;
+    }
+</style>
+<input type="hidden" name="TripID" id="TripID" asp-for="TripID">
+<input type="hidden" name="ExistingPhotos" id="ExistingPhotos" asp-for="ExistingPhotos">
+<input type="hidden" name="ExistingVideos" id="ExistingVideos" asp-for="ExistingVideos">
+<form id="Form" method="post" enctype="multipart/form-data">
+    <button class="btn btn-info" type="submit">Save</button>
+    <a style="text-align: center" href="#" id="photoTrigger" onclick="document.getElementById('photoInput').click(); return false">
+        <h1 class="text-center my-5">Photos</h1>
+    </a>
+    <input name="photos" style="display: none" multiple type="file" id="photoInput" accept="image/*">
+    <div id="PhotoContainer" class="container d-flex flex-wrap" style="text-align: center; justify-content: center; border: 1px solid black; padding:10px;">
+    </div>
+
+    <a style="text-align: center; padding: 5px;" href="#" id="videoTrigger" onclick="document.getElementById('videoInput').click(); return false">
+        <h1 class="text-center my-5">Videos</h1>
+    </a>
+    <input name="videos" style="display: none" multiple type="file" id="videoInput" accept="video/*">
+    <div id="VideoContainer" class="container d-flex flex-wrap" style="text-align: center; justify-content: center; border: 1px solid black;">
+    </div>
+</form>
+<button onclick="ResetAll();">Reset</button>
+<script>
+    function handlePhotoSelect(event) {
+        const files = event.target.files;
+        const gallery = document.getElementById('PhotoContainer');
+
+        for (let i = 0; i < files.length; i++) {
+            const file = files[i];
+            const reader = new FileReader();
+
+            reader.onload = function (event) {
+                const imageSrc = event.target.result;
+                const card = createImageCard(imageSrc, "Temporary");
+                gallery.appendChild(card);
+            };
+            reader.readAsDataURL(file);
+
+        }
+    }
+    function createImageCard(imageSrc, type) {
+        const card = document.createElement('div');
+        card.classList.add('card');
+
+        const img = document.createElement('img');
+        if (type == "Temporary") {
+            img.src = imageSrc;
+        } else {
+            img.src = "/Gallery/" + document.getElementById("TripID").value + "/Photos/" + imageSrc;
+        }
+        img.classList.add('card-img-top');
+        card.appendChild(img);
+
+        const btnGroup = document.createElement('div');
+        btnGroup.classList.add('btn-group');
+        btnGroup.innerHTML = `
+            <button class="btn btn-danger">Delete</button>
+            <button class="btn btn-secondary">Fullscreen View</button>
+            <button class="btn btn-primary">Download</button>
+          `;
+        card.appendChild(btnGroup);
+
+        return card;
+    }
+    function Startup() {
+        var AllPhotos = (document.getElementById("ExistingPhotos").value).split("-");
+        var AllVideos = (document.getElementById("ExistingVideos").value).split("-");
+        console.log(AllPhotos);
+        console.log(AllVideos);
+        const PhotoGallery = document.getElementById('PhotoContainer');
+        const VideoGallery = document.getElementById('VideoContainer');
+
+        for (var i = 0; i < AllPhotos.length; i++) {
+            if (AllPhotos[i] != "" && AllPhotos[i]) {
+                var card = createImageCard(AllPhotos[i]);
+                PhotoGallery.appendChild(card)
+            }
+        }
+    }
+    document.getElementById('photoInput').addEventListener('change', handlePhotoSelect);
+    // document.getElementById('videoInput').addEventListener('change', handleVideoSelect);
+    window.onload = Startup;
+</script>

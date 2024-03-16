@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "4Nl411I33p7v6hejVF5573lpaXXe0kUOwlSlOnj+ahc=",
+  "Hash": "VXoB9ddPjHRts2qtcdMFQdt9/WT87eFzRxTeVNJkcvA=",
   "Source": "MainProject",
   "BasePath": "_content/MainProject",
   "Mode": "Default",
@@ -85,12 +85,12 @@
       "OriginalItemSpec": "wwwroot\\favicon.ico"
     },
     {
-      "Identity": "C:\\Users\\Admin\\Desktop\\CompSci-IA\\MainProject\\MainProject\\wwwroot\\Gallery\\AddTrip.jpg",
+      "Identity": "C:\\Users\\Admin\\Desktop\\CompSci-IA\\MainProject\\MainProject\\wwwroot\\Gallery\\1\\Photos\\motorcycle1.jpg",
       "SourceId": "MainProject",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Users\\Admin\\Desktop\\CompSci-IA\\MainProject\\MainProject\\wwwroot\\",
       "BasePath": "_content/MainProject",
-      "RelativePath": "Gallery/AddTrip.jpg",
+      "RelativePath": "Gallery/1/Photos/motorcycle1.jpg",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Primary",
@@ -99,7 +99,41 @@
       "AssetTraitValue": "",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot\\Gallery\\AddTrip.jpg"
+      "OriginalItemSpec": "wwwroot\\Gallery\\1\\Photos\\motorcycle1.jpg"
+    },
+    {
+      "Identity": "C:\\Users\\Admin\\Desktop\\CompSci-IA\\MainProject\\MainProject\\wwwroot\\Gallery\\1\\Photos\\motorcycle2.jpg",
+      "SourceId": "MainProject",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\Admin\\Desktop\\CompSci-IA\\MainProject\\MainProject\\wwwroot\\",
+      "BasePath": "_content/MainProject",
+      "RelativePath": "Gallery/1/Photos/motorcycle2.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\Gallery\\1\\Photos\\motorcycle2.jpg"
+    },
+    {
+      "Identity": "C:\\Users\\Admin\\Desktop\\CompSci-IA\\MainProject\\MainProject\\wwwroot\\Gallery\\1\\Photos\\motorcycle3.jpg",
+      "SourceId": "MainProject",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\Admin\\Desktop\\CompSci-IA\\MainProject\\MainProject\\wwwroot\\",
+      "BasePath": "_content/MainProject",
+      "RelativePath": "Gallery/1/Photos/motorcycle3.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\Gallery\\1\\Photos\\motorcycle3.jpg"
     },
     {
       "Identity": "C:\\Users\\Admin\\Desktop\\CompSci-IA\\MainProject\\MainProject\\wwwroot\\Gallery\\Default.jpg",

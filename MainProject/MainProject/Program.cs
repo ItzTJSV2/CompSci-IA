@@ -39,8 +39,6 @@ namespace MainProject
                         TripEnd TEXT NOT NULL,
                         TripDate TEXT NOT NULL,
                         Members TEXT NOT NULL,
-                        VideoDirecs TEXT,
-                        PhotoDirecs TEXT,
                         PRIMARY KEY(TripID));";
                     using (var command = new SQLiteCommand(connection))
                     {
