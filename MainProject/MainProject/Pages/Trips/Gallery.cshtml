@@ -9,23 +9,52 @@
     }
 
     .card {
+        max-height: 350px;
+        max-width: 350px;
         margin-bottom: 10px;
         margin-right: 10px;
     }
 
-    .card:hover .btn-group {
-        display: block;
-    }
+        .card:hover .btn-group {
+            display: block;
+        }
 
     .btn-group {
         display: none;
     }
+
+    .modal-custom {
+        max-width: 1200px;
+        margin: auto;
+    }
+
+        .modal-custom .modal-content {
+            max-width: 100%;
+            max-height: 90vh;
+        }
+
+        .modal-custom .modal-body {
+            text-align: center;
+        }
+
+            .modal-custom .modal-body img {
+                max-width: 100%;
+                max-height: 100%;
+            }
 </style>
-<input type="hidden" name="TripID" id="TripID" asp-for="TripID">
-<input type="hidden" name="ExistingPhotos" id="ExistingPhotos" asp-for="ExistingPhotos">
-<input type="hidden" name="ExistingVideos" id="ExistingVideos" asp-for="ExistingVideos">
+
+<div style="text-align: center">
+    <p>To set the trip's thumbnail, upload a photo with the name "Thumbnail"!</p>
+</div>
 <form id="Form" method="post" enctype="multipart/form-data">
-    <button class="btn btn-info" type="submit">Save</button>
+    <input type="hidden" name="TripID" id="TripID" asp-for="TripID">
+    <input type="hidden" name="ExistingPhotos" id="ExistingPhotos" asp-for="ExistingPhotos">
+    <input type="hidden" name="ExistingVideos" id="ExistingVideos" asp-for="ExistingVideos">
+    <input type="hidden" name="DeletedPhotos" id="DeletedPhotos" asp-for="DeletedPhotos">
+    <input type="hidden" name="DeletedVideos" id="DeletedVideos" asp-for="DeletedVideos">
+    <div style="text-align: center">
+        <button style="text-align: center" class="btn btn-primary" type="submit">Save</button>
+    </div>
     <a style="text-align: center" href="#" id="photoTrigger" onclick="document.getElementById('photoInput').click(); return false">
         <h1 class="text-center my-5">Photos</h1>
     </a>
@@ -40,9 +69,128 @@
     <div id="VideoContainer" class="container d-flex flex-wrap" style="text-align: center; justify-content: center; border: 1px solid black;">
     </div>
 </form>
-<button onclick="ResetAll();">Reset</button>
+
+<div class="modal fade" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-custom" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <img style="visibility: hidden; width: 90%;" id="modalImage" class="img-fluid">
+            </div>
+            <div style="text-align: center;" class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="prevBtn">&larr; Previous</button>
+                <button type="button" class="btn btn-secondary" id="nextBtn">Next &rarr;</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
 <script>
+    var flag = true;
+    var photoArray = []; // FILE NAMES
+    var videoArray = []; // FILE NAMES
+    var AllPhotos = [];
+    var AllVideos = [];
+    var amountOfUploadedPhotos = -1;
+    var amountOfUploadedVideos = -1;
+    // FILE MANAGER
+    var uploadedPhotos = []; // ALL URLS
+    var uploadedVideos = []; // ALL URLS
+    var deletedPhotos = [];
+    var deletedVideos = [];
+
+    // MODAL IMAGE
+    var currentImageIndex;
+    var modalImage = document.getElementById('modalImage');
+    function OpenModalPhoto(index) {
+        modalImage.style.visibility = "visible";
+        currentImageIndex = index;
+        updateModalImage()
+    }
+    function updateModalImage() {
+        modalImage.src = uploadedPhotos[currentImageIndex];
+    }
+    document.getElementById('prevBtn').addEventListener('click', function () {
+        currentImageIndex = (currentImageIndex - 1 + uploadedPhotos.length) % uploadedPhotos.length;
+        updateModalImage();
+    });
+    document.getElementById('nextBtn').addEventListener('click', function () {
+        currentImageIndex = (currentImageIndex + 1) % uploadedPhotos.length;
+        updateModalImage();
+    });
+    document.addEventListener('keydown', function (event) {
+        if (event.key === 'ArrowLeft') {
+            currentImageIndex = (currentImageIndex - 1 + uploadedPhotos.length) % uploadedPhotos.length;
+            updateModalImage();
+        } else if (event.key === 'ArrowRight') {
+            currentImageIndex = (currentImageIndex + 1) % uploadedPhotos.length;
+            updateModalImage();
+        }
+    });
+    // PHOTO BUTTON FUNCTION
+    function downloadPhoto(index) {
+        var photoUrl = uploadedPhotos[index];
+        var a = document.createElement('a');
+        a.href = photoUrl;
+        a.download = photoArray[index]
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+    }
+    function deletePhoto(index) {
+        if (index <= amountOfUploadedPhotos) {
+            deletedPhotos.push(photoArray[index]);
+        }
+        const photoGallery = document.getElementById('PhotoContainer');
+        var childDivs = photoGallery.querySelectorAll('div');
+        var foundCard = null;
+        childDivs.forEach(function (div) {
+            if (div.getAttribute('PhotoCardIdentifier') == index) {
+                foundCard = div;
+            }
+        });
+        uploadedPhotos[index] = "";
+        photoGallery.removeChild(foundCard);
+        document.getElementById("DeletedPhotos").value = deletedPhotos.join("-");
+    }
+    // VIDEO BUTTON FUNCTION
+    function downloadVideo(index) {
+        var videoUrl = uploadedVideos[index];
+        var a = document.createElement('a');
+        a.href = videoUrl;
+        a.download = videoArray[index]
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+    }
+    function deleteVideo(index) {
+        console.log("Video Index: " + index);
+        console.log("Amount of Videos (uploaded): " + amountOfUploadedVideos);
+        if (index <= amountOfUploadedVideos) {
+            deletedVideos.push(videoArray[index]);
+        }
+        const videoGallary = document.getElementById('VideoContainer');
+        var childDivs = videoGallary.querySelectorAll('div');
+        var foundCard = null;
+        childDivs.forEach(function (div) {
+            if (div.getAttribute('VideoCardIdentifier') == index) {
+                foundCard = div;
+            }
+        });
+        uploadedPhotos[index] = "";
+        videoGallary.removeChild(foundCard);
+        document.getElementById("DeletedVideos").value = deletedVideos.join("-");
+    }
+    // PHOTO UPLOADING
     function handlePhotoSelect(event) {
+        Startup("photo");
         const files = event.target.files;
         const gallery = document.getElementById('PhotoContainer');
 
@@ -52,16 +200,16 @@
 
             reader.onload = function (event) {
                 const imageSrc = event.target.result;
-                const card = createImageCard(imageSrc, "Temporary");
+                const card = createImageCard(imageSrc, uploadedPhotos.length, "Temporary");
                 gallery.appendChild(card);
+                photoArray.push(event.target.result);
+                uploadedPhotos.push(event.target.result);
             };
             reader.readAsDataURL(file);
-
         }
     }
-    function createImageCard(imageSrc, type) {
+    function createImageCard(imageSrc, index, type) {
         const card = document.createElement('div');
-        card.classList.add('card');
 
         const img = document.createElement('img');
         if (type == "Temporary") {
@@ -69,36 +217,193 @@
         } else {
             img.src = "/Gallery/" + document.getElementById("TripID").value + "/Photos/" + imageSrc;
         }
+        card.classList.add('card');
+        card.setAttribute('PhotoCardIdentifier', index);
         img.classList.add('card-img-top');
         card.appendChild(img);
 
         const btnGroup = document.createElement('div');
         btnGroup.classList.add('btn-group');
-        btnGroup.innerHTML = `
-            <button class="btn btn-danger">Delete</button>
-            <button class="btn btn-secondary">Fullscreen View</button>
-            <button class="btn btn-primary">Download</button>
-          `;
+        btnGroup.setAttribute('style', "text-align: center;")
+        if (type == "Temporary") {
+            btnGroup.innerHTML = `
+                    <button data-toggle="modal" data-target="#imageModal" type="button" onclick="OpenModalPhoto(${index}) "class="btn btn-secondary">Fullscreen View</button>
+                  `;
+        } else {
+            btnGroup.innerHTML = `
+                    <button type="button" onclick="deletePhoto(${index})" class="btn btn-danger">Delete</button>
+                    <button data-toggle="modal" data-target="#imageModal" type="button" onclick="OpenModalPhoto(${index}) "class="btn btn-secondary">Fullscreen View</button>
+                    <button type="button" onclick="downloadPhoto(${index})" class="btn btn-primary">Download</button>
+                  `;
+        }
         card.appendChild(btnGroup);
-
         return card;
     }
-    function Startup() {
-        var AllPhotos = (document.getElementById("ExistingPhotos").value).split("-");
-        var AllVideos = (document.getElementById("ExistingVideos").value).split("-");
+    // VIDEO UPLOADING
+    function handleVideoSelect(event) {
+        Startup("video");
+        const files = event.target.files;
+        const gallery = document.getElementById('VideoContainer');
+
+        for (let i = 0; i < files.length; i++) {
+            const file = files[i];
+            const reader = new FileReader();
+
+            reader.onload = function (event) {
+                const videoSrc = event.target.result;
+                const card = createVideoThumbnailCard(videoSrc, uploadedVideos.length, "Temporary");
+                gallery.appendChild(card);
+                videoArray.push(event.target.result);
+                uploadedVideos.push(event.target.result);
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+    function createVideoThumbnailCard(videoSrc, index, type) {
+        const card = document.createElement('div');
+        const video = document.createElement('video');
+        if (type == "Temporary") {
+            video.src = videoSrc;
+        } else {
+            video.src = "/Gallery/" + document.getElementById("TripID").value + "/Videos/" + videoSrc;
+        }
+        card.classList.add('card');
+        card.setAttribute('VideoCardIdentifier', index);
+        video.classList.add('card-img-top');
+        video.controls = true;
+        card.appendChild(video);
+
+        const btnGroup = document.createElement('div');
+        btnGroup.classList.add('btn-group');
+        btnGroup.setAttribute('style', "text-align: center;")
+        if (type == "Temporary") {
+        } else {
+            btnGroup.innerHTML = `
+                            <button type="button" onclick="deleteVideo(${index})" class="btn btn-danger">Delete</button>
+                            <button type="button" onclick="downloadVideo(${index})" class="btn btn-primary">Download</button>
+                          `;
+        }
+        card.appendChild(btnGroup);
+        return card;
+    }
+
+    // GENERAL FUNCTIONS
+    function Assign() {
+        AllPhotos = (document.getElementById("ExistingPhotos").value).split("-");
+        AllVideos = (document.getElementById("ExistingVideos").value).split("-");
+    }
+    function Startup(from) {
         console.log(AllPhotos);
         console.log(AllVideos);
         const PhotoGallery = document.getElementById('PhotoContainer');
         const VideoGallery = document.getElementById('VideoContainer');
-
-        for (var i = 0; i < AllPhotos.length; i++) {
-            if (AllPhotos[i] != "" && AllPhotos[i]) {
-                var card = createImageCard(AllPhotos[i]);
-                PhotoGallery.appendChild(card)
+        if (from == "photo") {
+            PhotoGallery.innerHTML = "";
+            if (flag) {
+                Assign();
+                flag = false;
             }
+            uploadedPhotos = [];
+            for (var i = 0; i < AllPhotos.length; i++) {
+                if (AllPhotos[i] != "" && AllPhotos[i]) {
+                    photoArray.push(AllPhotos[i]);
+                    var card = createImageCard(AllPhotos[i], i);
+                    PhotoGallery.appendChild(card)
+                    uploadedPhotos.push(AllPhotos[i]);
+                }
+            }
+            amountOfUploadedPhotos = AllPhotos.length - 1;
+            var childDivs = PhotoGallery.querySelectorAll('img');
+            var tempArrayPhotos = [];
+            childDivs.forEach(function (img) {
+                tempArrayPhotos.push(img.src);
+            });
+            uploadedPhotos = tempArrayPhotos;
+        } else if (from == "video") {
+            VideoGallery.innerHTML = "";
+            if (flag) {
+                Assign();
+                flag = false;
+            }
+            uploadedVideos = [];
+            for (var i = 0; i < AllVideos.length; i++) {
+                if (AllVideos[i] != "" && AllVideos[i]) {
+                    var card = createVideoThumbnailCard(AllVideos[i], i);
+                    VideoGallery.appendChild(card)
+                    videoArray.push(AllVideos[i]);
+                    uploadedPhotos.push(AllPhotos[i]);
+                }
+            }
+            amountOfUploadedVideos = AllVideos.length - 1;
+            var childDivs = VideoGallery.querySelectorAll('video');
+            var tempArrayVideos = [];
+            childDivs.forEach(function (video) {
+                tempArrayVideos.push(video.src);
+            });
+            uploadedVideos = tempArrayVideos;
+        } else {
+            PhotoGallery.innerHTML = "";
+            VideoGallery.innerHTML = "";
+
+            if (flag) {
+                Assign();
+                flag = false;
+            }
+            uploadedPhotos = [];
+            uploadedVideos = [];
+            for (var i = 0; i < AllPhotos.length; i++) {
+                if (AllPhotos[i] != "" && AllPhotos[i]) {
+                    photoArray.push(AllPhotos[i]);
+                    var card = createImageCard(AllPhotos[i], i);
+                    PhotoGallery.appendChild(card)
+                    uploadedPhotos.push(AllPhotos[i]);
+                }
+            }
+            for (var i = 0; i < AllVideos.length; i++) {
+                if (AllVideos[i] != "" && AllVideos[i]) {
+                    var card = createVideoThumbnailCard(AllVideos[i], i);
+                    VideoGallery.appendChild(card)
+                    videoArray.push(AllVideos[i]);
+                    uploadedPhotos.push(AllPhotos[i]);
+                }
+            }
+            amountOfUploadedPhotos = AllPhotos.length - 1;
+            amountOfUploadedVideos = AllVideos.length - 1;
+
+            var childDivs = PhotoGallery.querySelectorAll('img');
+            var tempArrayPhotos = [];
+            childDivs.forEach(function (img) {
+                tempArrayPhotos.push(img.src);
+            });
+            uploadedPhotos = tempArrayPhotos;
+
+            var childDivs = VideoGallery.querySelectorAll('video');
+            var tempArrayVideos = [];
+            childDivs.forEach(function (video) {
+                tempArrayVideos.push(video.src);
+            });
+            uploadedVideos = tempArrayVideos;
         }
     }
     document.getElementById('photoInput').addEventListener('change', handlePhotoSelect);
-    // document.getElementById('videoInput').addEventListener('change', handleVideoSelect);
+    document.getElementById('videoInput').addEventListener('change', handleVideoSelect);
     window.onload = Startup;
+    document.getElementById("Form").addEventListener("submit", function (event) {
+        var Photofiles = document.getElementById('photoInput').files;
+        if (Photofiles.length > 0) {
+            for (var i = 0; i < Photofiles.length; i++) {
+                console.log("File " + (i + 1) + ": " + Photofiles[i].name);
+            }
+        }
+
+        var Videofiles = document.getElementById('videoInput').files;
+        if (Videofiles.length > 0) {
+            for (var i = 0; i < Videofiles.length; i++) {
+                console.log("File " + (i + 1) + ": " + Videofiles[i].name);
+            }
+        }
+
+        console.log(uploadedPhotos);
+        console.log(uploadedVideos);
+    });
 </script>

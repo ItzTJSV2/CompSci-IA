@@ -5,16 +5,32 @@
       "PackagePath": "staticwebassets\\MainProject.bundle.scp.css"
     },
     {
-      "Id": "C:\\Users\\Admin\\Desktop\\CompSci-IA\\MainProject\\MainProject\\wwwroot\\Gallery\\1\\Photos\\motorcycle1.jpg",
-      "PackagePath": "staticwebassets\\Gallery\\1\\Photos\\motorcycle1.jpg"
+      "Id": "C:\\Users\\Admin\\Desktop\\CompSci-IA\\MainProject\\MainProject\\wwwroot\\Gallery\\1\\Photos\\photo1.jpg",
+      "PackagePath": "staticwebassets\\Gallery\\1\\Photos\\photo1.jpg"
     },
     {
-      "Id": "C:\\Users\\Admin\\Desktop\\CompSci-IA\\MainProject\\MainProject\\wwwroot\\Gallery\\1\\Photos\\motorcycle2.jpg",
-      "PackagePath": "staticwebassets\\Gallery\\1\\Photos\\motorcycle2.jpg"
+      "Id": "C:\\Users\\Admin\\Desktop\\CompSci-IA\\MainProject\\MainProject\\wwwroot\\Gallery\\1\\Photos\\photo2.jpeg",
+      "PackagePath": "staticwebassets\\Gallery\\1\\Photos\\photo2.jpeg"
     },
     {
-      "Id": "C:\\Users\\Admin\\Desktop\\CompSci-IA\\MainProject\\MainProject\\wwwroot\\Gallery\\1\\Photos\\motorcycle3.jpg",
-      "PackagePath": "staticwebassets\\Gallery\\1\\Photos\\motorcycle3.jpg"
+      "Id": "C:\\Users\\Admin\\Desktop\\CompSci-IA\\MainProject\\MainProject\\wwwroot\\Gallery\\1\\Photos\\photo3.jpeg",
+      "PackagePath": "staticwebassets\\Gallery\\1\\Photos\\photo3.jpeg"
+    },
+    {
+      "Id": "C:\\Users\\Admin\\Desktop\\CompSci-IA\\MainProject\\MainProject\\wwwroot\\Gallery\\1\\Videos\\video1.mp4",
+      "PackagePath": "staticwebassets\\Gallery\\1\\Videos\\video1.mp4"
+    },
+    {
+      "Id": "C:\\Users\\Admin\\Desktop\\CompSci-IA\\MainProject\\MainProject\\wwwroot\\Gallery\\1\\Videos\\video2.mp4",
+      "PackagePath": "staticwebassets\\Gallery\\1\\Videos\\video2.mp4"
+    },
+    {
+      "Id": "C:\\Users\\Admin\\Desktop\\CompSci-IA\\MainProject\\MainProject\\wwwroot\\Gallery\\1\\Videos\\video3.mp4",
+      "PackagePath": "staticwebassets\\Gallery\\1\\Videos\\video3.mp4"
+    },
+    {
+      "Id": "C:\\Users\\Admin\\Desktop\\CompSci-IA\\MainProject\\MainProject\\wwwroot\\Gallery\\1\\Videos\\video4.mp4",
+      "PackagePath": "staticwebassets\\Gallery\\1\\Videos\\video4.mp4"
     },
     {
       "Id": "C:\\Users\\Admin\\Desktop\\CompSci-IA\\MainProject\\MainProject\\wwwroot\\Gallery\\Default.jpg",

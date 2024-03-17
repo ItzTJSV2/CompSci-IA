@@ -85,7 +85,6 @@ namespace MainProject.Pages.Trips
                 List<string> Members = DB.GetMembersNames(int.Parse(CardTrip[0]));
 
             }
-            ViewData["Gallery"] = Path.Combine(Path.GetDirectoryName(Environment.CurrentDirectory), @"Mainproject", @"Pages", @"Trips", @"Gallery");
 
             // Submitting Variables
             TripIndexerString = string.Join("-", TripIDIndexer.ToArray());
@@ -131,7 +130,14 @@ namespace MainProject.Pages.Trips
                 }
             }
             tripDBInteract.DeleteTrip(int.Parse(TripID));
-            return Page(); ;
+            string TripFolder = Path.Combine(Path.GetDirectoryName(Environment.CurrentDirectory), @"Mainproject", @"wwwroot", @"Gallery", TripID.ToString());
+            Console.WriteLine($"Attempting to remove: {TripFolder}");
+            FileInfo file = new FileInfo(TripFolder);
+            file.Attributes = FileAttributes.Normal;
+            file.Delete();
+            Console.WriteLine("Removing!"); 
+
+            return Page();
         }
     }
 }
