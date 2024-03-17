@@ -131,12 +131,18 @@ namespace MainProject.Pages.Trips
             }
             tripDBInteract.DeleteTrip(int.Parse(TripID));
             string TripFolder = Path.Combine(Path.GetDirectoryName(Environment.CurrentDirectory), @"Mainproject", @"wwwroot", @"Gallery", TripID.ToString());
-            Console.WriteLine($"Attempting to remove: {TripFolder}");
-            FileInfo file = new FileInfo(TripFolder);
-            file.Attributes = FileAttributes.Normal;
-            file.Delete();
-            Console.WriteLine("Removing!"); 
-
+            string[] Photofiles = Directory.GetFiles(Path.Combine(TripFolder, "Photos"));
+            string[] Videofiles = Directory.GetFiles(Path.Combine(TripFolder, "Videos"));
+            foreach (string photo in Photofiles)
+            {
+                FileInfo fileInfo = new FileInfo(photo);
+                fileInfo.Delete();
+            }
+            foreach (string video in Videofiles)
+            {
+                FileInfo fileInfo = new FileInfo(video);
+                fileInfo.Delete();
+            }
             return Page();
         }
     }
